@@ -5,6 +5,8 @@ import datetime
 import socket
 import json
 import argparse
+
+from definitions import CONFIG_DIR, LOGS_DIR
 from src import data_preprocessing, models
 import random
 import os
@@ -190,15 +192,12 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
     if not pre_train:
         args.nb_epoch = 200
 
-
-    # Data prep
-    logs_dir = './logs/'
-
-    with open(os.path.join('config', 'logs_meta.json')) as f:
+    with open(os.path.join(CONFIG_DIR, 'logs_meta.json')) as f:
         logs_meta = json.load(f)
 
     # data_preprocessing.download_logs(logs_meta, logs_dir)
-    distributions, logs = data_preprocessing.create_distributions(logs_dir)
+
+    distributions, logs = data_preprocessing.create_distributions(LOGS_DIR)
 
     ############################################################
     #Data Set 1

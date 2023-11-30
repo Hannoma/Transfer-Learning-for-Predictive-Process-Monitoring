@@ -14,15 +14,14 @@ import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import matplotlib.ticker as ticker
 
+from definitions import LOGS_DIR, CONFIG_DIR, RESULTS_DIR
 
 to_exclude_dataset = False
 
-LOG_DIR = './logs/'
-if not os.path.exists(LOG_DIR): os.makedirs(LOG_DIR)
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
 
-path = './results/figures'
-
-with open(os.path.join('config', 'logs_meta.json')) as f:
+with open(os.path.join(CONFIG_DIR, 'logs_meta.json')) as f:
     logs_meta = json.load(f)
 
 # for log_name in tqdm(logs_meta):
@@ -30,11 +29,11 @@ with open(os.path.join('config', 'logs_meta.json')) as f:
 #     blah = remotefile.info()['Content-Disposition']
 #     value, params = cgi.parse_header(blah)
 #     filename = params["filename"]
-#     urlretrieve(logs_meta[log_name], os.path.join(LOG_DIR, filename))
+#     urlretrieve(logs_meta[log_name], os.path.join(LOGS_DIR, filename))
 
-for file_name in os.listdir(LOG_DIR):
+for file_name in os.listdir(LOGS_DIR):
     if file_name.endswith('.gz'):
-        gz_file_name = os.path.join(LOG_DIR, file_name)
+        gz_file_name = os.path.join(LOGS_DIR, file_name)
         with gzip.open(gz_file_name, 'rb') as f_in:
             with open(gz_file_name[:-3], 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
@@ -43,9 +42,9 @@ trace_length_distributions = {}
 event_frequency_distributions = {}
 event_frequency_distributions_colors = {}
 
-for file_name in sorted(os.listdir(LOG_DIR)):
+for file_name in sorted(os.listdir(LOGS_DIR)):
     if file_name.endswith('.xes'):
-        xes_file_name = os.path.join(LOG_DIR, file_name)
+        xes_file_name = os.path.join(LOGS_DIR, file_name)
         log = xes_importer.apply(xes_file_name)
         event_frequency_distribution = {}
         event_frequency_distribution_colors = {}
@@ -74,7 +73,7 @@ for file_name in sorted(os.listdir(LOG_DIR)):
         event_frequency_distributions[str(file_name)] = event_frequency_distribution
         event_frequency_distributions_colors[str(file_name)] = event_frequency_distribution_colors
     elif file_name.endswith('.csv'):
-        log = pm4py.format_dataframe(pd.read_csv(os.path.join(LOG_DIR, file_name), sep=','),
+        log = pm4py.format_dataframe(pd.read_csv(os.path.join(LOGS_DIR, file_name), sep=','),
                                      case_id='CaseID',
                                      activity_key='ActivityID',
                                      timestamp_key='CompleteTimestamp')
@@ -127,18 +126,20 @@ fig.tight_layout()
 for log in logs:
     subplots[log] = fig.add_subplot(a, b, c)
     subplots[log].set_title('{}'.format(log))
-    #subplots[log].set_xlabel('trace length')
-    #subplots[log].set_ylabel('frequency')
+    # subplots[log].set_xlabel('trace length')
+    # subplots[log].set_ylabel('frequency')
     subplots[log].get_xaxis().set_major_locator(plt.MaxNLocator(integer=True))
     c += 1
 
 for log in logs:
-    subplots[log].bar(trace_length_distributions[log].keys(), trace_length_distributions[log].values(), color='tab:blue')
+    subplots[log].bar(trace_length_distributions[log].keys(), trace_length_distributions[log].values(),
+                      color='tab:blue')
 
 axins = {}
 for log in logs:
     axins[log] = inset_axes(subplots[log], width="30%", height="70%")
-    axins[log].bar(event_frequency_distributions[log].keys(), event_frequency_distributions[log].values(), color=event_frequency_distributions_colors[log].values())
+    axins[log].bar(event_frequency_distributions[log].keys(), event_frequency_distributions[log].values(),
+                   color=event_frequency_distributions_colors[log].values())
     axins[log].text(0.4,
                     0.9,
                     'vocab size: ' + str(len(event_frequency_distributions[log])),
@@ -158,5 +159,5 @@ for log in logs:
     plt.setp(axins[log].get_xticklabels(), visible=False)
 
 fig.subplots_adjust(hspace=0.2)
-fig.savefig(os.path.join(path, 'case_length_statistics.png'), dpi=fig.dpi)
-fig.savefig(os.path.join(path, 'case_length_statistics.eps'), format='eps')
+fig.savefig(os.path.join(RESULTS_DIR, 'figures', 'case_length_statistics.png'), dpi=fig.dpi)
+fig.savefig(os.path.join(RESULTS_DIR, 'figures', 'case_length_statistics.eps'), format='eps')
