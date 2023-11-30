@@ -1,0 +1,10 @@
+.dockerignore
+Dockerfile
+
+# Ignore git related files
+.git/
+.github/
+.gitignore
+
+# Ignore IDE related files
+.idea/
