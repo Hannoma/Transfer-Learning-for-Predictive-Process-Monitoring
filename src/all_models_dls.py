@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 import math
 import data_preprocessing
 import argparse
-import matplotlib.ticker as ticker
-import pandas as pd
-
 
 to_exclude_dataset = False
 

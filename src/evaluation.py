@@ -1,7 +1,5 @@
-import csv
 import os
 import json
-from tracemalloc import stop
 import data_preprocessing
 import models
 import numpy as np
@@ -14,7 +12,7 @@ from similarity.damerau import Damerau # pip install strsim
 import utils
 from fast_transformers.masking import TriangularCausalMask
 from copy import deepcopy
-import sys
+
 
 def iterate_over_generated_suffixes(predictions=None):
     damerau = Damerau()

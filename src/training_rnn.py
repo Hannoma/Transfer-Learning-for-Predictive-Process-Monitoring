@@ -1,4 +1,3 @@
-import models
 import torch.nn as nn
 import torch
 import numpy as np
@@ -6,7 +5,7 @@ import datetime
 import socket
 import json
 import argparse
-import data_preprocessing
+from src import data_preprocessing, models
 import random
 import os
 import math
@@ -301,15 +300,15 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         json.dump(new_split_log, f)
 
     new_log_with_prefixes = data_preprocessing.create_prefixes(new_split_log,
-                                                            min_prefix=2,
-                                                            create_tensors=True,
-                                                            add_special_tokens=True,
-                                                            pad_sequences=True,
-                                                            pad_token=args.pad_token,
-                                                            to_wrap_into_torch_dataset=args.to_wrap_into_torch_dataset,
-                                                            training_batch_size=args.training_batch_size,
-                                                            validation_batch_size=args.validation_batch_size,
-                                                            single_position_target=args.single_position_target)
+                                                               min_prefix=2,
+                                                               create_tensors=True,
+                                                               add_special_tokens=True,
+                                                               pad_sequences=True,
+                                                               pad_token=args.pad_token,
+                                                               to_wrap_into_torch_dataset=args.to_wrap_into_torch_dataset,
+                                                               training_batch_size=args.training_batch_size,
+                                                               validation_batch_size=args.validation_batch_size,
+                                                               single_position_target=args.single_position_target)
 
     # [EOS], [SOS], [PAD]
     nb_special_tokens = 3
@@ -337,14 +336,14 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
     for layer in layers:
         i += 1
         new_model = models.SequentialDecoder(hidden_size=args.hidden_dim,
-                                         num_layers=args.n_layers,
-                                         dropout_prob=args.dropout_prob,
-                                         vocab_size=attributes_meta[0]['vocabulary_size'],
-                                         attributes_meta=attributes_meta,
-                                         time_attribute_concatenated=args.time_attribute_concatenated,
-                                         pad_token=args.pad_token,
-                                         nb_special_tokens=attributes_meta[0]['nb_special_tokens'],
-                                         architecture='Niek').to(device=args.gpu)
+                                             num_layers=args.n_layers,
+                                             dropout_prob=args.dropout_prob,
+                                             vocab_size=attributes_meta[0]['vocabulary_size'],
+                                             attributes_meta=attributes_meta,
+                                             time_attribute_concatenated=args.time_attribute_concatenated,
+                                             pad_token=args.pad_token,
+                                             nb_special_tokens=attributes_meta[0]['nb_special_tokens'],
+                                             architecture='Niek').to(device=args.gpu)
 
 
         categorical_criterion = nn.CrossEntropyLoss()

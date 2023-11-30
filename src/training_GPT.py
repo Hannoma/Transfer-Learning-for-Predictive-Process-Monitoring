@@ -1,5 +1,3 @@
-from dis import pretty_flags
-import models
 import torch
 import torch.nn as nn
 import numpy as np
@@ -7,7 +5,7 @@ import datetime
 import socket
 import json
 import argparse
-import data_preprocessing
+from src import data_preprocessing, models
 import random
 import os
 import math
@@ -145,9 +143,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
             json.dump(split_log, f)
 
         augmented_log = data_preprocessing.create_transformer_augmentation(split_log,
-                                                                        pad_token=args.pad_token,
-                                                                        training_batch_size=args.training_batch_size,
-                                                                        validation_batch_size=args.validation_batch_size)
+                                                                           pad_token=args.pad_token,
+                                                                           training_batch_size=args.training_batch_size,
+                                                                           validation_batch_size=args.validation_batch_size)
 
         # [EOS], [SOS], [PAD] and [MASK]
         nb_special_tokens = 4
@@ -187,22 +185,22 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         #####################################################################################
 
         model = models.Transformer(d_model=args.hidden_dim,
-                                sequence_length=max_length,
-                                n_layers=args.n_layers,
-                                n_heads=args.n_heads,
-                                d_query=int(args.hidden_dim / args.n_heads),
-                                dropout_prob=args.dropout_prob,
-                                attention_dropout_prob=args.dropout_prob,
-                                mlm_prob=args.mlm_masking_prob,
-                                vocab_size=attributes_meta[0]['vocabulary_size'],
-                                pad_token=args.pad_token,
-                                mask_token=mask_token,
-                                sos_token=augmented_log['sos_token'],
-                                eos_token=augmented_log['eos_token'],
-                                architecture=args.architecture,
-                                attributes_meta=attributes_meta,
-                                time_attribute_concatenated=args.time_attribute_concatenated,
-                                nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
+                                   sequence_length=max_length,
+                                   n_layers=args.n_layers,
+                                   n_heads=args.n_heads,
+                                   d_query=int(args.hidden_dim / args.n_heads),
+                                   dropout_prob=args.dropout_prob,
+                                   attention_dropout_prob=args.dropout_prob,
+                                   mlm_prob=args.mlm_masking_prob,
+                                   vocab_size=attributes_meta[0]['vocabulary_size'],
+                                   pad_token=args.pad_token,
+                                   mask_token=mask_token,
+                                   sos_token=augmented_log['sos_token'],
+                                   eos_token=augmented_log['eos_token'],
+                                   architecture=args.architecture,
+                                   attributes_meta=attributes_meta,
+                                   time_attribute_concatenated=args.time_attribute_concatenated,
+                                   nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
 
         checkpoint = torch.load(f'./results/GPT/{combi[0]}/checkpoints/model-{combi[0]}.pt')
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -234,9 +232,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         json.dump(new_split_log, f)
 
     new_augmented_log = data_preprocessing.create_transformer_augmentation(new_split_log,
-                                                                    pad_token=args.pad_token,
-                                                                    training_batch_size=args.training_batch_size,
-                                                                    validation_batch_size=args.validation_batch_size)
+                                                                           pad_token=args.pad_token,
+                                                                           training_batch_size=args.training_batch_size,
+                                                                           validation_batch_size=args.validation_batch_size)
     # [EOS], [SOS], [PAD] and [MASK]
     nb_special_tokens = 4
     attributes_meta = {0: {'nb_special_tokens': nb_special_tokens, 'vocabulary_size': new_augmented_log['vocabulary_size']},
@@ -267,22 +265,22 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
     for layer in layers:
         i += 1
         new_model = models.Transformer(d_model=args.hidden_dim,
-                                sequence_length=new_max_length,
-                                n_layers=args.n_layers,
-                                n_heads=args.n_heads,
-                                d_query=int(args.hidden_dim / args.n_heads),
-                                dropout_prob=args.dropout_prob,
-                                attention_dropout_prob=args.dropout_prob,
-                                mlm_prob=args.mlm_masking_prob,
-                                vocab_size=attributes_meta[0]['vocabulary_size'],
-                                pad_token=args.pad_token,
-                                mask_token=mask_token,
-                                sos_token=new_augmented_log['sos_token'],
-                                eos_token=new_augmented_log['eos_token'],
-                                architecture=args.architecture,
-                                attributes_meta=attributes_meta,
-                                time_attribute_concatenated=args.time_attribute_concatenated,
-                                nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
+                                       sequence_length=new_max_length,
+                                       n_layers=args.n_layers,
+                                       n_heads=args.n_heads,
+                                       d_query=int(args.hidden_dim / args.n_heads),
+                                       dropout_prob=args.dropout_prob,
+                                       attention_dropout_prob=args.dropout_prob,
+                                       mlm_prob=args.mlm_masking_prob,
+                                       vocab_size=attributes_meta[0]['vocabulary_size'],
+                                       pad_token=args.pad_token,
+                                       mask_token=mask_token,
+                                       sos_token=new_augmented_log['sos_token'],
+                                       eos_token=new_augmented_log['eos_token'],
+                                       architecture=args.architecture,
+                                       attributes_meta=attributes_meta,
+                                       time_attribute_concatenated=args.time_attribute_concatenated,
+                                       nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
 
         # The will be only one instance of casual mask which is instanciated once here outside of all loops:
         if args.architecture == 'GPT':
