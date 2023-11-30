@@ -1261,7 +1261,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', help='dataset', default='', type=str)
     parser.add_argument('--random_seed', help='random_seed', default=1982, type=int)
     parser.add_argument('--random', help='if random', default=False, type=bool)
-    parser.add_argument('--gpu', help='gpu', default=1, type=int)
+    parser.add_argument('--gpu', help='gpu', default=0, type=int)
     parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!', default='[0,1,4,10,15]', type=str)
     parser.add_argument('--ground_truth_p', help='ground_truth_p', default=0.0, type=float)
     parser.add_argument('--time_attribute_concatenated', help='time_attribute_concatenated', default=False, type=bool)
