@@ -41,7 +41,7 @@ def main(args):
                 print(model_type)
                 if model_type not in model_types:
                     model_types.append(str(model_type))
-            
+
                 # extracting all logs:
                 for log in results[model_type]:
                     if log not in logs:
@@ -67,8 +67,8 @@ def main(args):
     for log in logs:
         subplots[log] = fig.add_subplot(a, b, c)
         subplots[log].set_title('{}'.format(log))
-        #subplots[log].set_xlabel('prefix length')
-        #subplots[log].set_ylabel('MAE (days)')
+        # subplots[log].set_xlabel('prefix length')
+        # subplots[log].set_ylabel('MAE (days)')
         subplots[log].get_xaxis().set_major_locator(plt.MaxNLocator(integer=True))
         subplots[log].set_zorder(1)
         subplots[log].set_frame_on(False)
@@ -117,16 +117,16 @@ def main(args):
     # table = pd.DataFrame(table_rows, columns=['model_type'] + logs).set_index('model_type')
     # with open(os.path.join(path, 'table_transpose_mae_normalised.tex'), 'w') as tf:
     #     tf.write(table.transpose().to_latex())
-    
+
     twin_subplots = {}
     for log in logs:
         twin_subplots[log] = subplots[log].twinx()
-        #twin_subplots[log].set_ylabel('# traces')
-        twin_subplots[log].tick_params(axis='x',          # changes apply to the x-axis
-                                       which='both',      # both major and minor ticks are affected
-                                       bottom=False,      # ticks along the bottom edge are off
-                                       top=False,         # ticks along the top edge are off
-                                       labelbottom=False) # labels along the bottom edge are off
+        # twin_subplots[log].set_ylabel('# traces')
+        twin_subplots[log].tick_params(axis='x',  # changes apply to the x-axis
+                                       which='both',  # both major and minor ticks are affected
+                                       bottom=False,  # ticks along the bottom edge are off
+                                       top=False,  # ticks along the top edge are off
+                                       labelbottom=False)  # labels along the bottom edge are off
 
     # for log in logs:
     #     if log in dls_counts.keys():
@@ -146,14 +146,16 @@ def main(args):
                 for model_type in model_types:
                     if model_type in results.keys():
                         if log in results[model_type].keys():
-                            suffix_evaluation_sum_result = data_preprocessing.suffix_evaluation_sum_mae_denormalised(results, model_type)
-                            d = data_preprocessing.key_string_to_int(suffix_evaluation_sum_result[model_type][log]['mae_denormalised_per_prefix'])
+                            suffix_evaluation_sum_result = data_preprocessing.suffix_evaluation_sum_mae_denormalised(
+                                results, model_type)
+                            d = data_preprocessing.key_string_to_int(
+                                suffix_evaluation_sum_result[model_type][log]['mae_denormalised_per_prefix'])
                             subplots[log].plot(d.keys(),
                                                d.values(),
                                                label=model_type)
 
     fig.subplots_adjust(hspace=0.2)
-    
+
     subplots[logs[len(logs) - 1]].legend(loc='center left',
                                          bbox_to_anchor=(-1.5, -0.2),
                                          ncol=7,
@@ -162,11 +164,11 @@ def main(args):
 
     for log in logs:
         subplots[log].set_ylim(bottom=0)
-        if log == 'BPI12' or log=='BPI13_Open' or log=='Helpdesk':
+        if log == 'BPI12' or log == 'BPI13_Open' or log == 'Helpdesk':
             subplots[log].set_ylabel('DLS')
-        if log=='Helpdesk' or log=='RTFM' or log=='Sepsis':    
+        if log == 'Helpdesk' or log == 'RTFM' or log == 'Sepsis':
             subplots[log].set_xlabel('Prefix length')
-            
+
         subplots[log].tick_params(axis='both', which='major', labelsize=10)
 
     fig.savefig(os.path.join(path, 'all_models_mae_denormalised.png'), dpi=fig.dpi)

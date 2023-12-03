@@ -1,6 +1,7 @@
 import torch
 from torch.nn import functional as F
 
+
 # Sampling from top-k follows the idea of: https://arxiv.org/abs/1904.09751
 # One day I will implement sampling from top-p also: https://gist.github.com/thomwolf/1a5a29f6962089e871b94cbd09daf317
 

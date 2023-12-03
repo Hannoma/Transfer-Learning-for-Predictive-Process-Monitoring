@@ -46,11 +46,15 @@ def create_prefixes(log,
                     single_position_target=False):
     augmented_log = deepcopy(log)
     augmented_log['training_prefixes_and_suffixes'] = {'ids': {},
-                                                       'activities': {'prefixes': {}, 'suffixes': {'input': {}, 'target': {}}},
-                                                       'times': {'prefixes': {}, 'suffixes': {'input': {}, 'target': {}}}}
+                                                       'activities': {'prefixes': {},
+                                                                      'suffixes': {'input': {}, 'target': {}}},
+                                                       'times': {'prefixes': {},
+                                                                 'suffixes': {'input': {}, 'target': {}}}}
     augmented_log['validation_prefixes_and_suffixes'] = {'ids': {},
-                                                         'activities': {'prefixes': {}, 'suffixes': {'input': {}, 'target': {}}},
-                                                         'times': {'prefixes': {}, 'suffixes': {'input': {}, 'target': {}}}}
+                                                         'activities': {'prefixes': {},
+                                                                        'suffixes': {'input': {}, 'target': {}}},
+                                                         'times': {'prefixes': {},
+                                                                   'suffixes': {'input': {}, 'target': {}}}}
 
     def iterate_over_traces(log,
                             subset='training',
@@ -77,7 +81,8 @@ def create_prefixes(log,
         time_attribute_padding_value = 0.0
 
         # For each original trace in the log:
-        for trace in tqdm(log[subset + '_traces'], desc='creating ' + subset + ' prefixes of ' + augmented_log['id'] + ' for ae'):
+        for trace in tqdm(log[subset + '_traces'],
+                          desc='creating ' + subset + ' prefixes of ' + augmented_log['id'] + ' for ae'):
             if single_position_target:
                 max_prefix = len(trace['activities']) + 1
             else:
@@ -144,10 +149,14 @@ def create_prefixes(log,
                     if not single_position_target:
                         # Create a suffix tensor (in each prefix list) which has the max length for sure:
                         for prefix in log[subset + '_prefixes_and_suffixes']['activities']['prefixes'].keys():
-                            an_activity_suffix_input = log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['input'][prefix][0]
-                            a_time_suffix_input = log[subset + '_prefixes_and_suffixes']['times']['suffixes']['input'][prefix][0]
-                            an_activity_suffix_target = log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix][0]
-                            a_time_suffix_target = log[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix][0]
+                            an_activity_suffix_input = \
+                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['input'][prefix][0]
+                            a_time_suffix_input = \
+                            log[subset + '_prefixes_and_suffixes']['times']['suffixes']['input'][prefix][0]
+                            an_activity_suffix_target = \
+                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix][0]
+                            a_time_suffix_target = \
+                            log[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix][0]
 
                             # Max length (for suffix) is extended by one to cover [EOS] (target) and [SOS] (input)
                             if add_special_tokens:
@@ -160,18 +169,23 @@ def create_prefixes(log,
                                 # print(prefix)
                                 # print(an_activity_suffix_input.size(0))
 
-
                             extension = pad_token * torch.ones((max_length - prefix - an_activity_suffix_input.size(0)))
-                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['input'][prefix][0] = torch.cat(
+                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['input'][prefix][
+                                0] = torch.cat(
                                 (an_activity_suffix_input, extension))
-                            extension = time_attribute_padding_value * torch.ones((max_length - prefix - a_time_suffix_input.size(0)))
+                            extension = time_attribute_padding_value * torch.ones(
+                                (max_length - prefix - a_time_suffix_input.size(0)))
                             log[subset + '_prefixes_and_suffixes']['times']['suffixes']['input'][prefix][0] = torch.cat(
                                 (a_time_suffix_input, extension))
-                            extension = pad_token * torch.ones((max_length - prefix - an_activity_suffix_target.size(0)))
-                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix][0] = torch.cat(
+                            extension = pad_token * torch.ones(
+                                (max_length - prefix - an_activity_suffix_target.size(0)))
+                            log[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix][
+                                0] = torch.cat(
                                 (an_activity_suffix_target, extension))
-                            extension = time_attribute_padding_value * torch.ones((max_length - prefix - a_time_suffix_target.size(0)))
-                            log[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix][0] = torch.cat(
+                            extension = time_attribute_padding_value * torch.ones(
+                                (max_length - prefix - a_time_suffix_target.size(0)))
+                            log[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix][
+                                0] = torch.cat(
                                 (a_time_suffix_target, extension))
 
                     for prefix in log[subset + '_prefixes_and_suffixes']['activities']['prefixes'].keys():
@@ -254,7 +268,7 @@ def create_prefixes(log,
             del log[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix]
 
     if to_wrap_into_torch_dataset:
-        augmented_log['training_torch_data_loaders']= {}
+        augmented_log['training_torch_data_loaders'] = {}
         augmented_log['validation_torch_data_loaders'] = {}
         wrap_into_torch_dataset(log=augmented_log, subset='training', batch_size=training_batch_size)
         wrap_into_torch_dataset(log=augmented_log, subset='validation', batch_size=validation_batch_size)
@@ -267,7 +281,6 @@ def create_transformer_augmentation(log,
                                     pad_token=0,
                                     training_batch_size=None,
                                     validation_batch_size=None):
-
     augmented_log = deepcopy(log)
     augmented_log['training_augmented_traces'] = {'ids': [],
                                                   'activities': {'input': [], 'target': []},
@@ -294,7 +307,8 @@ def create_transformer_augmentation(log,
             time_attribute_padding_value = 0.0
 
             # For each original trace in the log:
-            for trace in tqdm(log[subset + '_traces'], desc='creating ' + subset + ' prefixes of ' + augmented_log['id'] + ' for transformer'):
+            for trace in tqdm(log[subset + '_traces'],
+                              desc='creating ' + subset + ' prefixes of ' + augmented_log['id'] + ' for transformer'):
                 max_prefix = len(trace['activities'])
 
                 activities_sequence_input = [sos_token] + trace['activities']
@@ -319,14 +333,16 @@ def create_transformer_augmentation(log,
             a_times_sequence_target = log[subset + '_augmented_traces']['times']['target'][0]
 
             # Max length is extended by one to cover [EOS] (target) and [SOS] (input)
-            max_length =  log['longest_trace_length'] + 1 #Determines size of Tensor a 
+            max_length = log['longest_trace_length'] + 1  # Determines size of Tensor a
 
             extension = pad_token * torch.ones((max_length - an_activities_sequence_input.size(0)))
-            log[subset + '_augmented_traces']['activities']['input'][0] = torch.cat((an_activities_sequence_input, extension))
+            log[subset + '_augmented_traces']['activities']['input'][0] = torch.cat(
+                (an_activities_sequence_input, extension))
             extension = time_attribute_padding_value * torch.ones((max_length - a_times_sequence_input.size(0)))
             log[subset + '_augmented_traces']['times']['input'][0] = torch.cat((a_times_sequence_input, extension))
             extension = pad_token * torch.ones((max_length - an_activities_sequence_target.size(0)))
-            log[subset + '_augmented_traces']['activities']['target'][0] = torch.cat((an_activities_sequence_target, extension))
+            log[subset + '_augmented_traces']['activities']['target'][0] = torch.cat(
+                (an_activities_sequence_target, extension))
             extension = time_attribute_padding_value * torch.ones((max_length - a_times_sequence_target.size(0)))
             log[subset + '_augmented_traces']['times']['target'][0] = torch.cat((a_times_sequence_target, extension))
 
@@ -368,17 +384,17 @@ def create_transformer_augmentation(log,
                              pin_memory=True,
                              shuffle=True,
                              batch_size=batch_size)
-                             #persistent_workers=True,
-                             #num_workers=2,
-                             #prefetch_factor=4)
+            # persistent_workers=True,
+            # num_workers=2,
+            # prefetch_factor=4)
         else:
             d_l = DataLoader(dataset=TensorDataset(a_s_i, t_s_i, a_s_t, t_s_t),
                              pin_memory=True,
                              shuffle=False,
                              batch_size=batch_size)
-                             #persistent_workers=True,
-                             #num_workers=2,
-                             #prefetch_factor=4)
+            # persistent_workers=True,
+            # num_workers=2,
+            # prefetch_factor=4)
 
         log[subset + '_torch_data_loaders'] = d_l
 
@@ -387,7 +403,7 @@ def create_transformer_augmentation(log,
         del log[subset + '_augmented_traces']['activities']['target']
         del log[subset + '_augmented_traces']['times']['target']
 
-    augmented_log['training_torch_data_loaders']= {}
+    augmented_log['training_torch_data_loaders'] = {}
     augmented_log['validation_torch_data_loaders'] = {}
     wrap_into_torch_dataset(log=augmented_log, subset='training', batch_size=training_batch_size)
     wrap_into_torch_dataset(log=augmented_log, subset='validation', batch_size=validation_batch_size)
@@ -415,7 +431,7 @@ def create_structured_log(log, log_name=None, to_normalise=True):
         processed_trace = {'id': trace.attributes['concept:name'], 'activities': [], 'times': []}
         last_datetime = None
 
-        if len(trace) > processed_log['longest_trace_length']: 
+        if len(trace) > processed_log['longest_trace_length']:
             processed_log['longest_trace_length'] = len(trace)
 
         for event in trace:
@@ -430,7 +446,7 @@ def create_structured_log(log, log_name=None, to_normalise=True):
                     processed_log['activity_label_to_category_index'][event['concept:name']])
 
             if last_datetime is not None:
-                diff = (event['time:timestamp'] - last_datetime).total_seconds() # decided to be on a second scale
+                diff = (event['time:timestamp'] - last_datetime).total_seconds()  # decided to be on a second scale
                 processed_trace['times'].append(diff)
                 last_datetime = event['time:timestamp']
 
@@ -472,22 +488,24 @@ def denormalise(prediction, in_days=True):
     # in-place denormalisation:
     def denorm(s):
         if in_days:
-            return (float(s) * (float(prediction['max_time_value']) - float(prediction['min_time_value'])) + float(prediction['min_time_value'])) / 60 / 60 / 24
+            return (float(s) * (float(prediction['max_time_value']) - float(prediction['min_time_value'])) + float(
+                prediction['min_time_value'])) / 60 / 60 / 24
         else:
-            return float(s) * (float(prediction['max_time_value']) - float(prediction['min_time_value'])) + float(prediction['min_time_value'])
+            return float(s) * (float(prediction['max_time_value']) - float(prediction['min_time_value'])) + float(
+                prediction['min_time_value'])
 
     def rec_walk_list(l):
         for index, item in enumerate(l):
-            if isinstance(l[index], list): # is a list
+            if isinstance(l[index], list):  # is a list
                 rec_walk_list(l[index])
-            else: # is a scalar
+            else:  # is a scalar
                 l[index] = denorm(l[index])
 
     def rec_walk_dict(d):
         for k, v in d.items():
             if isinstance(v, dict):
                 rec_walk_dict(v)
-            else: # is a list
+            else:  # is a list
                 rec_walk_list(v)
 
     prediction['times_denormalised'] = deepcopy(prediction['times'])
@@ -535,7 +553,7 @@ def create_distributions(logs_dir, log_name=None):
             else:
                 distributions[log.attributes['concept:name']] = distribution
             logs[str(file_name)] = log
-        
+
         elif file_name.endswith('.csv'):
             log = pm4py.format_dataframe(pd.read_csv(os.path.join(logs_dir, file_name), sep=','),
                                          case_id='CaseID',
@@ -551,7 +569,7 @@ def create_distributions(logs_dir, log_name=None):
             distribution = dict(sorted(distribution.items()))
             distributions[str(file_name)] = distribution
             logs[str(file_name)] = log
-        
+
     return dict(sorted(distributions.items())), dict(sorted(logs.items()))
 
 
@@ -605,7 +623,8 @@ def create_count_figure(counts):
     return fig
 
 
-def count_nb_traces_longer_than_prefix(trace_length_distributions, min_prefix=2, max_prefix=200, delete_zero_prefixes=True):
+def count_nb_traces_longer_than_prefix(trace_length_distributions, min_prefix=2, max_prefix=200,
+                                       delete_zero_prefixes=True):
     counts = {}
 
     for log_name, log_distribution in trace_length_distributions.items():
@@ -623,7 +642,7 @@ def count_nb_traces_longer_than_prefix(trace_length_distributions, min_prefix=2,
     # delete zero-count prefixes:
     if delete_zero_prefixes:
         for log_name in counts.keys():
-            prefixes_to_delete =[]
+            prefixes_to_delete = []
             for prefix in counts[log_name].keys():
                 if counts[log_name][prefix] == 0: prefixes_to_delete.append(prefix)
             for prefix in prefixes_to_delete:
@@ -643,11 +662,13 @@ def suffix_evaluation_sum_dls(suffix_evaluation_result, model_type):
                                                                   'dls': prefix_dls_distribution['dls'],
                                                                   'nb_worst_situs': prefix_dls_distribution[
                                                                       'nb_worst_situs'],
-                                                                  'nb_all_situs': prefix_dls_distribution['nb_all_situs']}
+                                                                  'nb_all_situs': prefix_dls_distribution[
+                                                                      'nb_all_situs']}
 
         for prefix, dls_scores in prefix_dls_distribution['dls_per_prefix'].items():
             if len(dls_scores):
-                suffix_evaluation_sum_dls_result[model_type][log_name]['dls_per_prefix'][prefix] = sum(dls_scores) / len(
+                suffix_evaluation_sum_dls_result[model_type][log_name]['dls_per_prefix'][prefix] = sum(
+                    dls_scores) / len(
                     dls_scores)
             else:
                 # for now passing:
@@ -666,12 +687,15 @@ def suffix_evaluation_sum_mae(suffix_evaluation_result, model_type):
     for log_name, prefix_dls_distribution in suffix_evaluation_result[model_type].items():
         suffix_evaluation_sum_mae_result[model_type][log_name] = {'mae_per_prefix': {},
                                                                   'mae': prefix_dls_distribution['mae'],
-                                                                  'nb_worst_situs': prefix_dls_distribution['nb_worst_situs'],
-                                                                  'nb_all_situs': prefix_dls_distribution['nb_all_situs']}
+                                                                  'nb_worst_situs': prefix_dls_distribution[
+                                                                      'nb_worst_situs'],
+                                                                  'nb_all_situs': prefix_dls_distribution[
+                                                                      'nb_all_situs']}
 
         for prefix, dls_scores in prefix_dls_distribution['mae_per_prefix'].items():
             if len(dls_scores):
-                suffix_evaluation_sum_mae_result[model_type][log_name]['mae_per_prefix'][prefix] = sum(dls_scores) / len(
+                suffix_evaluation_sum_mae_result[model_type][log_name]['mae_per_prefix'][prefix] = sum(
+                    dls_scores) / len(
                     dls_scores)
             else:
                 # for now passing:
@@ -689,13 +713,17 @@ def suffix_evaluation_sum_mae_denormalised(suffix_evaluation_result, model_type)
 
     for log_name, prefix_dls_distribution in suffix_evaluation_result[model_type].items():
         suffix_evaluation_sum_mae_result[model_type][log_name] = {'mae_denormalised_per_prefix': {},
-                                                                  'mae_denormalised': prefix_dls_distribution['mae_denormalised'],
-                                                                  'nb_worst_situs': prefix_dls_distribution['nb_worst_situs'],
-                                                                  'nb_all_situs': prefix_dls_distribution['nb_all_situs']}
+                                                                  'mae_denormalised': prefix_dls_distribution[
+                                                                      'mae_denormalised'],
+                                                                  'nb_worst_situs': prefix_dls_distribution[
+                                                                      'nb_worst_situs'],
+                                                                  'nb_all_situs': prefix_dls_distribution[
+                                                                      'nb_all_situs']}
 
         for prefix, dls_scores in prefix_dls_distribution['mae_denormalised_per_prefix'].items():
             if len(dls_scores):
-                suffix_evaluation_sum_mae_result[model_type][log_name]['mae_denormalised_per_prefix'][prefix] = sum(dls_scores) / len(dls_scores)
+                suffix_evaluation_sum_mae_result[model_type][log_name]['mae_denormalised_per_prefix'][prefix] = sum(
+                    dls_scores) / len(dls_scores)
             else:
                 # for now passing:
                 pass
@@ -706,7 +734,7 @@ def suffix_evaluation_sum_mae_denormalised(suffix_evaluation_result, model_type)
 
 def create_prefix_dls_distribution_figure(suffix_evaluation_result, model_type):
     suffix_evaluation_sum_result = suffix_evaluation_sum_dls(suffix_evaluation_result, model_type)
-    
+
     b = 3  # number of columns
     a = math.ceil(len(suffix_evaluation_sum_result[model_type]) / b)  # number of rows
     c = 1  # initialize plot counter
@@ -722,12 +750,15 @@ def create_prefix_dls_distribution_figure(suffix_evaluation_result, model_type):
         plt.ylabel('dls')
         plt.text(0.05,
                  0.85,
-                 "model:" + model_type + ",dls:" + prefix_dls_distribution['dls'] + ",worst:" + str(prefix_dls_distribution['nb_worst_situs']) + ",all:" + str(prefix_dls_distribution['nb_all_situs']) + ",w/a:" + "{:.2f}".format(prefix_dls_distribution['nb_worst_situs']/prefix_dls_distribution['nb_all_situs']))
+                 "model:" + model_type + ",dls:" + prefix_dls_distribution['dls'] + ",worst:" + str(
+                     prefix_dls_distribution['nb_worst_situs']) + ",all:" + str(
+                     prefix_dls_distribution['nb_all_situs']) + ",w/a:" + "{:.2f}".format(
+                     prefix_dls_distribution['nb_worst_situs'] / prefix_dls_distribution['nb_all_situs']))
         plt.bar(prefix_dls_distribution['dls_per_prefix'].keys(), prefix_dls_distribution['dls_per_prefix'].values())
         fig.gca().get_xaxis().set_major_locator(plt.MaxNLocator(integer=True))
         c += 1
 
     fig.subplots_adjust(wspace=0.2)
     fig.subplots_adjust(hspace=0.6)
-    
+
     return fig

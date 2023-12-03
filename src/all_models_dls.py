@@ -39,7 +39,7 @@ def main(args):
             # extracting all model types:
             for model_type in dls_results.keys():
                 print(model_type)
-                
+
                 if model_type not in model_types:
                     model_types.append(str(model_type))
 
@@ -58,7 +58,6 @@ def main(args):
     logs.sort()
     print(logs)
 
-
     b = 3  # number of columns
     a = math.ceil(len(logs) / b)  # number of rows
     c = 1  # initialize plot counter
@@ -68,9 +67,9 @@ def main(args):
     for log in logs:
         subplots[log] = fig.add_subplot(a, b, c)
         subplots[log].set_title('{}'.format(log))
-        #subplots[log].set_xlabel('prefix length')
+        # subplots[log].set_xlabel('prefix length')
         subplots[log].set_ylim(0.0, 1.1)
-        #subplots[log].set_ylabel('DLS')
+        # subplots[log].set_ylabel('DLS')
         subplots[log].get_xaxis().set_major_locator(plt.MaxNLocator(integer=True))
         subplots[log].set_zorder(1)
         subplots[log].set_frame_on(False)
@@ -123,13 +122,13 @@ def main(args):
     twin_subplots = {}
     for log in logs:
         twin_subplots[log] = subplots[log].twinx()
-        #twin_subplots[log].set_ylabel('# traces')
-        twin_subplots[log].tick_params(axis='x',          # changes apply to the x-axis
-                                       which='both',      # both major and minor ticks are affected
-                                       bottom=False,      # ticks along the bottom edge are off
-                                       top=False,         # ticks along the top edge are off
-                                       labelbottom=False, 
-                                       labelsize=20) # labels along the bottom edge are off
+        # twin_subplots[log].set_ylabel('# traces')
+        twin_subplots[log].tick_params(axis='x',  # changes apply to the x-axis
+                                       which='both',  # both major and minor ticks are affected
+                                       bottom=False,  # ticks along the bottom edge are off
+                                       top=False,  # ticks along the top edge are off
+                                       labelbottom=False,
+                                       labelsize=20)  # labels along the bottom edge are off
         # twin_subplots[log].yaxis.set_major_formatter(
         #     ticker.FuncFormatter(lambda x, pos: '{:.0f}'.format(x / 1000) + 'K'))
 
@@ -151,8 +150,10 @@ def main(args):
                 for model_type in model_types:
                     if model_type in dls_results.keys():
                         if log in dls_results[model_type].keys():
-                            suffix_evaluation_sum_result = data_preprocessing.suffix_evaluation_sum_dls(dls_results, model_type)
-                            d = data_preprocessing.key_string_to_int(suffix_evaluation_sum_result[model_type][log]['dls_per_prefix'])
+                            suffix_evaluation_sum_result = data_preprocessing.suffix_evaluation_sum_dls(dls_results,
+                                                                                                        model_type)
+                            d = data_preprocessing.key_string_to_int(
+                                suffix_evaluation_sum_result[model_type][log]['dls_per_prefix'])
                             subplots[log].plot(d.keys(),
                                                d.values(),
                                                label=model_type)
@@ -168,11 +169,11 @@ def main(args):
 
     for log in logs:
         subplots[log].set_ylim(bottom=0)
-        if log == 'BPI12' or log=='BPI13_Open' or log=='Helpdesk':
+        if log == 'BPI12' or log == 'BPI13_Open' or log == 'Helpdesk':
             subplots[log].set_ylabel('DLS')
-        if log=='Helpdesk' or log=='RTFM' or log=='Sepsis':    
+        if log == 'Helpdesk' or log == 'RTFM' or log == 'Sepsis':
             subplots[log].set_xlabel('Prefix length')
-            
+
         subplots[log].tick_params(axis='both', which='major', labelsize=10)
 
     fig.savefig(os.path.join(path, 'all_models_dls.png'), dpi=fig.dpi)

@@ -15,7 +15,7 @@ class PositionalEncoding(nn.Module):
         self.d_model = d_model
         self.max_len = max_len
         self.series_dimensions = series_dimensions
-        
+
         print(self.max_len)
 
         if self.series_dimensions == 1:
@@ -46,10 +46,10 @@ class PositionalEncoding(nn.Module):
             pe[1:d_model:2, :, :] = torch.cos(pos_w * div_term).transpose(0, 1).unsqueeze(1).repeat(1, height, 1)
             pe[d_model::2, :, :] = torch.sin(pos_h * div_term).transpose(0, 1).unsqueeze(2).repeat(1, 1, width)
             pe[d_model + 1::2, :, :] = torch.cos(pos_h * div_term).transpose(0, 1).unsqueeze(2).repeat(1, 1, width)
-            pe = pe.view(2*d_model, height * width, -1).squeeze(-1) # Flattening it back to 1D series
+            pe = pe.view(2 * d_model, height * width, -1).squeeze(-1)  # Flattening it back to 1D series
             pe = pe.transpose(0, 1)
-            
-        pe = pe.unsqueeze(0) # Extending it by an extra leading dim for the batches
+
+        pe = pe.unsqueeze(0)  # Extending it by an extra leading dim for the batches
         self.register_buffer('pe', pe)
 
     # Expecting a flattened (1D) series
@@ -65,7 +65,8 @@ class PositionalEncoding(nn.Module):
 # or further attributes should be concatenated as an extra (last) dim of input tensor x
 # https://walkwithfastai.com/tab.ae
 class Embedding(nn.Module):
-    def __init__(self, d_model, vocab_size, dropout_prob=0.0, attributes_meta=None, time_attribute_concatenated=False, pad_token=None):
+    def __init__(self, d_model, vocab_size, dropout_prob=0.0, attributes_meta=None, time_attribute_concatenated=False,
+                 pad_token=None):
         super().__init__()
 
         self.d_model = d_model
@@ -76,17 +77,19 @@ class Embedding(nn.Module):
             self.activity_label = nn.Embedding(vocab_size, self.d_model, padding_idx=pad_token)
             self.time_attribute = nn.Linear(1, self.d_model)
         elif 1 in self.attributes_meta.keys() and self.time_attribute_concatenated:
-            self.activity_label = nn.Embedding(vocab_size, self.d_model-1, padding_idx=pad_token)
+            self.activity_label = nn.Embedding(vocab_size, self.d_model - 1, padding_idx=pad_token)
         elif 1 not in self.attributes_meta.keys():
             self.activity_label = nn.Embedding(vocab_size, self.d_model, padding_idx=pad_token)
 
         self.dropout = nn.Dropout(p=dropout_prob)
 
-    def forward(self, x): # input is always a tuple
+    def forward(self, x):  # input is always a tuple
         if 1 in self.attributes_meta.keys() and not self.time_attribute_concatenated:
-            return self.dropout(self.activity_label(x[0].long()).squeeze(2) + self.time_attribute(x[1])) * math.sqrt(self.d_model)
+            return self.dropout(self.activity_label(x[0].long()).squeeze(2) + self.time_attribute(x[1])) * math.sqrt(
+                self.d_model)
         elif 1 in self.attributes_meta.keys() and self.time_attribute_concatenated:
-            return self.dropout(torch.cat((self.activity_label(x[0].long()).squeeze(2), x[1]), dim=-1)) * math.sqrt(self.d_model)
+            return self.dropout(torch.cat((self.activity_label(x[0].long()).squeeze(2), x[1]), dim=-1)) * math.sqrt(
+                self.d_model)
         elif 1 not in self.attributes_meta.keys():
             return self.dropout(self.activity_label(x[0].long()).squeeze(2)) * math.sqrt(self.d_model)
 
@@ -103,17 +106,19 @@ class ManualEmbedding(nn.Module):
             self.activity_label = nn.Linear(vocab_size, self.d_model)
             self.time_attribute = nn.Linear(1, self.d_model)
         elif 1 in self.attributes_meta.keys() and self.time_attribute_concatenated:
-            self.activity_label = nn.Linear(vocab_size, self.d_model-1)
+            self.activity_label = nn.Linear(vocab_size, self.d_model - 1)
         elif 1 not in self.attributes_meta.keys():
             self.activity_label = nn.Linear(vocab_size, self.d_model)
 
         self.dropout = nn.Dropout(p=dropout_prob)
 
-    def forward(self, x): # input is always a tuple
+    def forward(self, x):  # input is always a tuple
         if 1 in self.attributes_meta.keys() and not self.time_attribute_concatenated:
-            return self.dropout(self.activity_label(x[0]).squeeze(2) + self.time_attribute(x[1])) * math.sqrt(self.d_model)
+            return self.dropout(self.activity_label(x[0]).squeeze(2) + self.time_attribute(x[1])) * math.sqrt(
+                self.d_model)
         elif 1 in self.attributes_meta.keys() and self.time_attribute_concatenated:
-            return self.dropout(torch.cat((self.activity_label(x[0]).squeeze(2), x[1]), dim=-1)) * math.sqrt(self.d_model)
+            return self.dropout(torch.cat((self.activity_label(x[0]).squeeze(2), x[1]), dim=-1)) * math.sqrt(
+                self.d_model)
         elif 1 not in self.attributes_meta.keys():
             return self.dropout(self.activity_label(x[0]).squeeze(2)) * math.sqrt(self.d_model)
 
@@ -132,7 +137,7 @@ class Readout(nn.Module):
             self.activity_label = nn.Linear(d_model, vocab_size)
             self.time_attribute = nn.Linear(d_model, 1)
         elif 1 in self.attributes_meta.keys() and self.time_attribute_concatenated:
-            self.activity_label = nn.Linear(d_model-1, vocab_size)
+            self.activity_label = nn.Linear(d_model - 1, vocab_size)
         elif 1 not in self.attributes_meta.keys():
             self.activity_label = nn.Linear(d_model, vocab_size)
 
@@ -279,7 +284,7 @@ class SequentialAutoEncoder(nn.Module):
                                          nb_special_tokens)
         self.decoder = SequentialDecoder(hidden_size,
                                          num_layers,
-                                         dropout_prob,vocab_size,
+                                         dropout_prob, vocab_size,
                                          attributes_meta,
                                          time_attribute_concatenated,
                                          pad_token,
@@ -324,11 +329,13 @@ class SelfAttentionalBlock(nn.Module):
     def forward(self, x, attn_mask=None):
         return self.self_attentional_block(x, attn_mask=attn_mask)
 
+
 class Transfer(nn.Module):
     def __init__(self, path):
         super().__init__()
         self.path = path
         self.model = torch.load(self.path)
+
 
 class Transformer(nn.Module):
     def __init__(self,
@@ -386,7 +393,7 @@ class Transformer(nn.Module):
         self.value_embedding = Embedding(d_model=self.d_model,
                                          vocab_size=self.vocab_size,
                                          dropout_prob=self.dropout_prob,
-                                         attributes_meta = self.attributes_meta,
+                                         attributes_meta=self.attributes_meta,
                                          time_attribute_concatenated=self.time_attribute_concatenated,
                                          pad_token=self.pad_token)
         self.self_attentional_block = SelfAttentionalBlock(d_model=self.d_model,
@@ -400,11 +407,11 @@ class Transformer(nn.Module):
         self.readout = Readout(d_model=self.d_model,
                                vocab_size=self.vocab_size,
                                dropout_prob=self.dropout_prob,
-                               attributes_meta = self.attributes_meta,
+                               attributes_meta=self.attributes_meta,
                                time_attribute_concatenated=self.time_attribute_concatenated)
 
     def forward(self, x, attn_mask=None):
-        if self.architecture == 'BERT': # BERT or GPT
+        if self.architecture == 'BERT':  # BERT or GPT
             x_new = []
             if 0 in self.attributes_meta.keys():
                 x_new.append(x[0].detach().clone())
@@ -416,8 +423,8 @@ class Transformer(nn.Module):
         x = self.position_embedding(x)
         x = self.self_attentional_block(x, attn_mask=attn_mask)
 
-        return self.readout(x) # it is a tuple
-    
+        return self.readout(x)  # it is a tuple
+
 
 # Motivated by https://www.aclweb.org/anthology/N19-1423/ but dynamic masking as per https://arxiv.org/abs/1907.11692
 # Performed with tensors on device
@@ -446,7 +453,7 @@ class DynamicMLM(nn.Module):
         self.method = method
         self.attributes_meta = attributes_meta
 
-    def forward(self, x): # input is always a tuple
+    def forward(self, x):  # input is always a tuple
         with torch.no_grad():
             # Probabilistic MLM with a uniform prior
             # https://www.aclweb.org/anthology/2020.acl-main.24/
@@ -497,7 +504,7 @@ class DynamicMLM(nn.Module):
                             x[0][:, self.masked_indexes, :] = float(self.mask_token) * torch.ones(
                                 (x[0].size(0), self.masked_indexes.size(0), x[0].size(2)), device=x[0].device)
 
-                        # time attribute:
+                            # time attribute:
                             # Since all the other special tokens come with value 0:
                             if 1 in self.attributes_meta.keys():
                                 min_values = float(self.attributes_meta[1]['min_value']) * torch.ones(
@@ -515,7 +522,7 @@ class DynamicMLM(nn.Module):
                                                                           max_values, min_values)
                         '''
 
-            return x # always a tuple
+            return x  # always a tuple
 
 
 class TransformerAutoEncoder(nn.Module):
@@ -550,8 +557,12 @@ class TransformerAutoEncoder(nn.Module):
         self.nb_special_tokens = nb_special_tokens
         self.vocab_size = vocab_size + self.nb_special_tokens
 
-        target_lookahead_mask = (torch.triu(torch.ones(self.sequence_length, self.sequence_length)) == 1).transpose(0, 1)
-        self.register_buffer('target_lookahead_mask', target_lookahead_mask.float().masked_fill(target_lookahead_mask == 0, float('-inf')).masked_fill(target_lookahead_mask == 1, float(0.0)))
+        target_lookahead_mask = (torch.triu(torch.ones(self.sequence_length, self.sequence_length)) == 1).transpose(0,
+                                                                                                                    1)
+        self.register_buffer('target_lookahead_mask',
+                             target_lookahead_mask.float().masked_fill(target_lookahead_mask == 0,
+                                                                       float('-inf')).masked_fill(
+                                 target_lookahead_mask == 1, float(0.0)))
 
         self.position_embedding = PositionalEncoding(max_len=self.sequence_length,
                                                      d_model=self.d_model,
@@ -560,7 +571,7 @@ class TransformerAutoEncoder(nn.Module):
         self.value_embedding = Embedding(d_model=self.d_model,
                                          vocab_size=self.vocab_size,
                                          dropout_prob=self.dropout_prob,
-                                         attributes_meta = self.attributes_meta,
+                                         attributes_meta=self.attributes_meta,
                                          time_attribute_concatenated=self.time_attribute_concatenated,
                                          pad_token=self.pad_token)
         self.self_attentional_block = nn.Transformer(d_model=self.d_model,
@@ -573,7 +584,7 @@ class TransformerAutoEncoder(nn.Module):
         self.readout = Readout(d_model=self.d_model,
                                vocab_size=self.vocab_size,
                                dropout_prob=self.dropout_prob,
-                               attributes_meta = self.attributes_meta,
+                               attributes_meta=self.attributes_meta,
                                time_attribute_concatenated=self.time_attribute_concatenated)
 
     def forward(self, x, y, attn_mask=None):
@@ -583,8 +594,8 @@ class TransformerAutoEncoder(nn.Module):
         y = self.value_embedding(y)
         y = self.position_embedding(y)
 
-        return self.readout(self.self_attentional_block(x, y, tgt_mask=self.target_lookahead_mask[:y.size(1), :y.size(1)])) # it is a tuple
-
+        return self.readout(self.self_attentional_block(x, y, tgt_mask=self.target_lookahead_mask[:y.size(1),
+                                                                       :y.size(1)]))  # it is a tuple
 
 # credits to https://github.com/litanli/wavenet-time-series-forecasting/blob/master/wavenet_pytorch.py
 # class DilatedCausalConv1d(nn.Module):

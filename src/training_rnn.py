@@ -6,7 +6,7 @@ import socket
 import json
 import argparse
 
-from definitions import CONFIG_DIR, LOGS_DIR
+from definitions import CONFIG_DIR, LOGS_DIR, RESULTS_DIR
 from src import data_preprocessing, models
 import random
 import os
@@ -15,7 +15,8 @@ import copy
 import utils
 
 
-def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None, sample=False):
+def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None,
+                   sample=False):
     prediction = ()
     use_teacher_forcing = True if random.random() < seq_ae_teacher_forcing_ratio else False
 
@@ -30,7 +31,8 @@ def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_inp
         input_position = input_sos
 
         for i in range(model_input_y[0].size(1)):
-            inter_position, decoder_hidden = model.decoder.cell(model.decoder.value_embedding(input_position), decoder_hidden)
+            inter_position, decoder_hidden = model.decoder.cell(model.decoder.value_embedding(input_position),
+                                                                decoder_hidden)
             output_position = model.decoder.readout(inter_position)
 
             if i == 0:
@@ -59,7 +61,6 @@ def iterate_over_prefixes(log_with_prefixes,
                           optimizer=None,
                           lagrange_a=None,
                           to_wrap_into_torch_dataset=None):
-
     summa_categorical_loss = 0.0
     summa_regression_loss = 0.0
     steps = 0
@@ -68,8 +69,10 @@ def iterate_over_prefixes(log_with_prefixes,
         for prefix in log_with_prefixes[subset + '_prefixes_and_suffixes']['activities']['prefixes'].keys():
             activities_prefixes = log_with_prefixes[subset + '_prefixes_and_suffixes']['activities']['prefixes'][prefix]
             times_prefixes = log_with_prefixes[subset + '_prefixes_and_suffixes']['times']['prefixes'][prefix]
-            activities_suffixes_target = log_with_prefixes[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix]
-            times_suffixes_target = log_with_prefixes[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][prefix]
+            activities_suffixes_target = \
+                log_with_prefixes[subset + '_prefixes_and_suffixes']['activities']['suffixes']['target'][prefix]
+            times_suffixes_target = log_with_prefixes[subset + '_prefixes_and_suffixes']['times']['suffixes']['target'][
+                prefix]
 
             if isinstance(activities_prefixes, torch.Tensor):
                 nb_iterations = math.ceil(activities_prefixes.size(0) / batch_size)
@@ -79,15 +82,23 @@ def iterate_over_prefixes(log_with_prefixes,
                     optimizer.zero_grad()
 
                 if device == 'GPU':
-                    activities_prefixes_batch = activities_prefixes[i*batch_size:i*batch_size+batch_size, :].unsqueeze(2).cuda()
-                    times_prefixes_batch = times_prefixes[i*batch_size:i*batch_size+batch_size, :].unsqueeze(2).cuda()
-                    activities_suffixes_target_batch = activities_suffixes_target[i*batch_size:i*batch_size+batch_size, :].squeeze(-1).long().cuda()
-                    times_suffixes_target_batch = times_suffixes_target[i * batch_size:i * batch_size + batch_size, :].unsqueeze(1).cuda()
+                    activities_prefixes_batch = activities_prefixes[i * batch_size:i * batch_size + batch_size,
+                                                :].unsqueeze(2).cuda()
+                    times_prefixes_batch = times_prefixes[i * batch_size:i * batch_size + batch_size, :].unsqueeze(
+                        2).cuda()
+                    activities_suffixes_target_batch = activities_suffixes_target[
+                                                       i * batch_size:i * batch_size + batch_size, :].squeeze(
+                        -1).long().cuda()
+                    times_suffixes_target_batch = times_suffixes_target[i * batch_size:i * batch_size + batch_size,
+                                                  :].unsqueeze(1).cuda()
                 else:
-                    activities_prefixes_batch = activities_prefixes[i * batch_size:i * batch_size + batch_size, :].unsqueeze(2)
+                    activities_prefixes_batch = activities_prefixes[i * batch_size:i * batch_size + batch_size,
+                                                :].unsqueeze(2)
                     times_prefixes_batch = times_prefixes[i * batch_size:i * batch_size + batch_size, :].unsqueeze(2)
-                    activities_suffixes_target_batch = activities_suffixes_target[i*batch_size:i*batch_size+batch_size, :].squeeze(-1).long()
-                    times_suffixes_target_batch = times_suffixes_target[i * batch_size:i * batch_size + batch_size, :].unsqueeze(1)
+                    activities_suffixes_target_batch = activities_suffixes_target[
+                                                       i * batch_size:i * batch_size + batch_size, :].squeeze(-1).long()
+                    times_suffixes_target_batch = times_suffixes_target[i * batch_size:i * batch_size + batch_size,
+                                                  :].unsqueeze(1)
 
                 prediction = model((activities_prefixes_batch, times_prefixes_batch))
 
@@ -120,7 +131,7 @@ def iterate_over_prefixes(log_with_prefixes,
         if len(prediction) > 1:
             return summa_categorical_loss.item() / steps, summa_regression_loss.item() / steps
         else:
-            return (summa_categorical_loss.item() / steps, )
+            return (summa_categorical_loss.item() / steps,)
     else:
         if subset == 'training':
             prefixes = list(log_with_prefixes[subset + '_torch_data_loaders'].keys())
@@ -176,7 +187,7 @@ def iterate_over_prefixes(log_with_prefixes,
         if len(prediction) > 1:
             return summa_categorical_loss.item() / steps, summa_regression_loss.item() / steps
         else:
-            return (summa_categorical_loss.item() / steps, )
+            return (summa_categorical_loss.item() / steps,)
 
 
 def main(args, dt_object, pre_train=True, combi=[], layers=[]):
@@ -200,7 +211,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
     distributions, logs = data_preprocessing.create_distributions(LOGS_DIR)
 
     ############################################################
-    #Data Set 1
+    # Data Set 1
     #############################################################
     if not pre_train:
         log_name = combi[0]
@@ -209,7 +220,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
             print('allocated GPU memory: ' + str(torch.cuda.memory_allocated(device=args.gpu)))
 
         processed_log = data_preprocessing.create_structured_log(logs[log_name], log_name=log_name)
-        path = os.path.join('results', 'rnn', str(processed_log['id']))
+        path = os.path.join(RESULTS_DIR, 'rnn', str(processed_log['id']))
         if not os.path.exists(path): os.makedirs(path)
 
         vars(args)['dataset'] = str(processed_log['id'])
@@ -241,8 +252,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
 
         # [EOS], [SOS], [PAD]
         nb_special_tokens = 3
-        attributes_meta = {0: {'nb_special_tokens': nb_special_tokens, 'vocabulary_size': log_with_prefixes['vocabulary_size']},
-                           1: {'min_value': 0.0, 'max_value': 1.0}}
+        attributes_meta = {
+            0: {'nb_special_tokens': nb_special_tokens, 'vocabulary_size': log_with_prefixes['vocabulary_size']},
+            1: {'min_value': 0.0, 'max_value': 1.0}}
 
         vars(args)['sos_token'] = log_with_prefixes['sos_token']
         vars(args)['eos_token'] = log_with_prefixes['eos_token']
@@ -257,9 +269,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         with open(os.path.join(path, 'experiment_parameters.json'), 'a') as fp:
             json.dump(vars(args), fp)
             fp.write('\n')
-    ####################################################################################
-    #Build pretrained model'
-    ####################################################################################
+        ####################################################################################
+        # Build pretrained model'
+        ####################################################################################
         model = models.SequentialDecoder(hidden_size=args.hidden_dim,
                                          num_layers=args.n_layers,
                                          dropout_prob=args.dropout_prob,
@@ -269,18 +281,19 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
                                          pad_token=args.pad_token,
                                          nb_special_tokens=attributes_meta[0]['nb_special_tokens'],
                                          architecture='Niek').to(device=args.gpu)
-        
-        checkpoint =  torch.load(f'./results/rnn/{combi[0]}/checkpoints/model-{combi[0]}.pt')
+
+        checkpoint = torch.load(f'./results/rnn/{combi[0]}/checkpoints/model-{combi[0]}.pt')
         model.load_state_dict(checkpoint['model_state_dict'])
 
     #############################################################################################
-    #Dataset 2
+    # Dataset 2
     ########################################################################################
     model_log = combi[-1]
 
     new_processed_log = data_preprocessing.create_structured_log(logs[model_log], log_name=model_log)
-    path = os.path.join('results', 'rnn', str(new_processed_log['id']))
-    if not os.path.exists(path): os.makedirs(path)
+    path = os.path.join(RESULTS_DIR, 'rnn', str(new_processed_log['id']))
+    if not os.path.exists(path): 
+        os.makedirs(path)
 
     vars(args)['dataset'] = str(new_processed_log['id'])
 
@@ -311,8 +324,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
 
     # [EOS], [SOS], [PAD]
     nb_special_tokens = 3
-    attributes_meta = {0: {'nb_special_tokens': nb_special_tokens, 'vocabulary_size': new_log_with_prefixes['vocabulary_size']},
-                        1: {'min_value': 0.0, 'max_value': 1.0}}
+    attributes_meta = {
+        0: {'nb_special_tokens': nb_special_tokens, 'vocabulary_size': new_log_with_prefixes['vocabulary_size']},
+        1: {'min_value': 0.0, 'max_value': 1.0}}
 
     vars(args)['sos_token'] = new_log_with_prefixes['sos_token']
     vars(args)['eos_token'] = new_log_with_prefixes['eos_token']
@@ -326,9 +340,9 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
 
     with open(os.path.join(path, 'experiment_parameters.json'), 'a') as fp:
         json.dump(vars(args), fp)
-        fp.write('\n')    
-    
-    ############################################################################
+        fp.write('\n')
+
+        ############################################################################
     # New Model:
     ############################################################################
     i = 0
@@ -343,7 +357,6 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
                                              pad_token=args.pad_token,
                                              nb_special_tokens=attributes_meta[0]['nb_special_tokens'],
                                              architecture='Niek').to(device=args.gpu)
-
 
         categorical_criterion = nn.CrossEntropyLoss()
         regression_criterion = nn.MSELoss()
@@ -372,7 +385,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         total_validation_losses = []
 
         #####################################################################################
-        #Transferring the Model
+        # Transferring the Model
         ######################################################################################
         if not pre_train:
             with torch.no_grad():
@@ -482,7 +495,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
             elif not pre_train:
                 checkpoint_name = f'model-{combi[0]}-{combi[1]}-[{i}]' + '.pt'
 
-            new_path = os.path.join('results', 'rnn', combi[-1])
+            new_path = os.path.join(RESULTS_DIR, 'rnn', combi[-1])
             if not os.path.exists(new_path): os.makedirs(new_path)
 
             torch.save({
@@ -494,17 +507,20 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
 
 if __name__ == '__main__':
     dt_object = datetime.datetime.now()
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--datetime', help='datetime', default=dt_object.strftime("%Y%m%d%H%M"), type=str)
     parser.add_argument('--hidden_dim', help='hidden state dimensions', default=128, type=int)
     parser.add_argument('--n_layers', help='number of layers', default=4, type=int)
     parser.add_argument('--n_heads', help='number of heads', default=4, type=int)
     parser.add_argument('--nb_epoch', help='training iterations', default=400, type=int)
-    parser.add_argument('--training_batch_size', help='number of training samples in mini-batch', default=2560, type=int)
-    parser.add_argument('--validation_batch_size', help='number of validation samples in mini-batch', default=2560, type=int)
+    parser.add_argument('--training_batch_size', help='number of training samples in mini-batch', default=2560,
+                        type=int)
+    parser.add_argument('--validation_batch_size', help='number of validation samples in mini-batch', default=2560,
+                        type=int)
     parser.add_argument('--training_mlm_method', help='training MLM method', default='BERT', type=str)
-    parser.add_argument('--validation_mlm_method', help='validation MLM method', default='fix_masks', type=str) # we would like to end up with some non-stochastic & at least pseudo likelihood metric
+    parser.add_argument('--validation_mlm_method', help='validation MLM method', default='fix_masks',
+                        type=str)  # we would like to end up with some non-stochastic & at least pseudo likelihood metric
     parser.add_argument('--mlm_masking_prob', help='mlm_masking_prob', default=0.15, type=float)
     parser.add_argument('--dropout_prob', help='dropout_prob', default=0.3, type=float)
     parser.add_argument('--training_learning_rate', help='GD learning rate', default=1e-4, type=float)
@@ -514,7 +530,8 @@ if __name__ == '__main__':
     parser.add_argument('--random_seed', help='random_seed', default=1982, type=int)
     parser.add_argument('--random', help='if random', default=True, type=bool)
     parser.add_argument('--gpu', help='gpu', default=0, type=int)
-    parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!', default='[0,1,4,10,15]', type=str)
+    parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!',
+                        default='[0,1,4,10,15]', type=str)
     parser.add_argument('--ground_truth_p', help='ground_truth_p', default=0.0, type=float)
     parser.add_argument('--architecture', help='BERT or GPT', default='BERT', type=str)
     parser.add_argument('--time_attribute_concatenated', help='time_attribute_concatenated', default=False, type=bool)
@@ -528,23 +545,23 @@ if __name__ == '__main__':
     parser.add_argument('--single_position_target', help='single_position_target', default=True, type=bool)
 
     args = parser.parse_args()
-    
+
     vars(args)['hostname'] = str(socket.gethostname())
-    
+
     print('This is training of: ' + dt_object.strftime("%Y%m%d%H%M"))
 
     if args.device == 'GPU':
         torch.cuda.set_device(args.gpu)
         print('This is training at gpu: ' + str(args.gpu))
 
-    layers = [['0','1','2','3'], ['0','1','2'],
-                ['1','2','3'], ['0','2','3'], 
-                ['0','1','3'], ['0','1'],['0']]
-    
-    for log in ['BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
-                'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
-                'BPI%20Challenge%202017.xes.gz','BPIC15_1.xes',
-                'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+    layers = [['0', '1', '2', '3'], ['0', '1', '2'],
+              ['1', '2', '3'], ['0', '2', '3'],
+              ['0', '1', '3'], ['0', '1'], ['0']]
+
+    for log in ['BPI_Challenge_2013_closed_problems.xes.gz', 'BPI_Challenge_2012.xes.gz',
+                'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
+                'BPI%20Challenge%202017.xes.gz', 'BPIC15_1.xes',
+                'Road_Traffic_Fine_Management_Process.xes.gz', 'Sepsis%20Cases%20-%20Event%20Log.xes.gz',
                 'helpdesk.csv']:
         main(args, dt_object, combi=[log], layers=[[]])
         # for transfer in [#'BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
@@ -554,5 +571,3 @@ if __name__ == '__main__':
         #                  'helpdesk.csv']:
         #         if log != transfer:
         #             main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
-
-
