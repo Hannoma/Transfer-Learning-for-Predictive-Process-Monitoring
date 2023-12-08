@@ -152,13 +152,13 @@ def create_prefixes(log,
                             # Max length (for suffix) is extended by one to cover [EOS] (target) and [SOS] (input)
                             if add_special_tokens:
                                 max_length = log['longest_trace_length'] + 1
-                                # print(prefix)
-                                # print(an_activity_suffix_input.size(0))
+                                print(prefix)
+                                print(an_activity_suffix_input.size(0))
                             else:
                                 max_length = log['longest_trace_length']
 
-                                # print(prefix)
-                                # print(an_activity_suffix_input.size(0))
+                                print(prefix)
+                                print(an_activity_suffix_input.size(0))
 
 
                             extension = pad_token * torch.ones((max_length - prefix - an_activity_suffix_input.size(0)))

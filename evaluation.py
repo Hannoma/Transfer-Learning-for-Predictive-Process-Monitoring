@@ -1140,7 +1140,7 @@ def generate(datetime, model_type, args, combi=[]):
     log_path = os.path.join(path, combi[-1])
     checkpoint_path = os.path.join(log_path, 'checkpoints')
     checkpoint_files_ = [f for f in os.listdir(checkpoint_path) if os.path.isfile(os.path.join(checkpoint_path, f))]
-    checkpoint_files = [f for f in checkpoint_files_ if f.startswith(f'model-{combi[0]}')] 
+    checkpoint_files = [f for f in checkpoint_files_ if f.startswith(f'model-{combi[0]}')]
     print(checkpoint_files)        
     split_log = [f for f in os.listdir(log_path) if f.startswith('split_log_')][-1]
     split_log_file_path = os.path.join(log_path, split_log)
@@ -1174,16 +1174,14 @@ def evaluate_generation(datetime, model_type, combi=[]):
 
     # Walk through all the log-result directories:
     log_path = os.path.join(path, combi[-1])
-    pred_path = os.path.join(path, 'Predictions')
+    save_path = os.path.join(path, 'Predictions')
     checkpoint_path = os.path.join(log_path, 'checkpoints')
     checkpoint_files_ = [f for f in os.listdir(checkpoint_path) if os.path.isfile(os.path.join(checkpoint_path, f))]
     checkpoint_files = [f for f in checkpoint_files_ if f.startswith(f'model-{combi[0]}')]
-    # print(checkpoint_files)
-    #pred_path = os.path.join(save_path, combi[0], combi[-1])
+    pred_path = os.path.join(save_path, combi[0], combi[-1])
 
     for checkpoint in checkpoint_files:
         number = checkpoint[-5]
-        print('This is evaluation of: ' + log_path)
         with open(os.path.join(pred_path, f'suffix_evaluation_result_{combi[0]}_{combi[-1]}[{number}].json')) as f_in:
             predictions = json.load(f_in)
 
@@ -1284,13 +1282,20 @@ if __name__ == '__main__':
         torch.cuda.set_device(args.gpu)
         print('This is evaluation at gpu: ' + str(args.gpu))
 
-    for log in ['Road_Traffic_Fine_Management_Process.xes.gz']:
-        for transfer in ['helpdesk.csv']:
-            if log != transfer:
-                main(args, dt_object, combi=[log, transfer])
+    layers = [['0','1','2','3'], ['0','1','2'],
+                ['1','2','3'], ['0','2','3'], 
+                ['0','1','3'], ['0','1'],['0']]
+    
+    for log in ['Road_Traffic_Fine_Management_Process.xes.gz',  'helpdesk.csv']:
+        main(args, dt_object, pre_train=True, combi=[log], layers=[[]])
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
+                         'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
+                         'BPI%20Challenge%202017.xes.gz','BPIC15_1.xes',
+                         'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+                         'helpdesk.csv']:
+                if log != transfer:
+                    main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
                 
 
-    # for log in ['Road_Traffic_Fine_Management_Process.xes.gz']:
-    #     for transfer in ['BPI%20Challenge%202017.xes.gz']:
-    #         if log != transfer:
-    #             main(args, dt_object, combi=[log, transfer])
+
+

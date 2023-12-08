@@ -125,7 +125,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
             print('allocated GPU memory: ' + str(torch.cuda.memory_allocated(device=args.gpu)))
 
         processed_log = data_preprocessing.create_structured_log(logs[log_name], log_name=log_name)
-        path = os.path.join('results', str(args.architecture), str(processed_log['id']))
+        path = os.path.join(f'results-{args.random_seed}', str(args.architecture), str(processed_log['id']))
         if not os.path.exists(path): os.makedirs(path)
 
         vars(args)['dataset'] = str(processed_log['id'])
@@ -214,7 +214,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
 
     new_processed_log = data_preprocessing.create_structured_log(logs[model_log], log_name=model_log)
 
-    path = os.path.join('results', str(args.architecture), str(new_processed_log['id']))
+    path = os.path.join(f'results-{args.random_seed}', str(args.architecture), str(new_processed_log['id']))
     if not os.path.exists(path): os.makedirs(path)
 
     vars(args)['dataset'] = str(new_processed_log['id'])
@@ -359,14 +359,11 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
         for e in range(args.nb_epoch):
             if not e%10:
                 print('training epoch ' + str(e) + '/' + str(args.nb_epoch) + ' of ' + str(new_augmented_log['id']))
-            if not pre_train:
+            if pre_train:
                 for name, param in new_model.named_parameters():
                     for single in layer:
                         if f'layers.{single}.' in name:
                             param.requires_grad = False
-
-            for name,param in new_model.named_parameters():
-                print(param.requires_grad)
 
             new_model.train()
 
@@ -485,7 +482,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
             elif not pre_train:
                 checkpoint_name = f'model-{combi[0]}-{combi[1]}-[{i}]' + '.pt'
         
-            new_path = os.path.join('results', 'GPT', combi[-1])
+            new_path = os.path.join(f'results-{args.random_seed}', 'GPT', combi[-1])
             if not os.path.exists(new_path): os.makedirs(new_path)
 
             torch.save({
@@ -503,7 +500,7 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_dim', help='hidden state dimensions', default=128, type=int)
     parser.add_argument('--n_layers', help='number of layers', default=4, type=int)
     parser.add_argument('--n_heads', help='number of heads', default=4, type=int)
-    parser.add_argument('--nb_epoch', help='training iterations', default=400, type=int)
+    parser.add_argument('--nb_epoch', help='training iterations', default=200, type=int)
     parser.add_argument('--training_batch_size', help='number of training samples in mini-batch', default=512, type=int)
     parser.add_argument('--validation_batch_size', help='number of validation samples in mini-batch', default=512, type=int)
     parser.add_argument('--training_mlm_method', help='training MLM method', default='BERT', type=str)
@@ -515,8 +512,8 @@ if __name__ == '__main__':
     parser.add_argument('--validation_split', help='validation_split', default=0.2, type=float)
     parser.add_argument('--dataset', help='dataset', default='', type=str)
     parser.add_argument('--random_seed', help='random_seed', default=1982, type=int)
-    parser.add_argument('--random', help='if random', default=True, type=bool)
-    parser.add_argument('--gpu', help='gpu', default=1, type=int)
+    parser.add_argument('--random', help='if random', default=False, type=bool)
+    parser.add_argument('--gpu', help='gpu', default=0, type=int)
     parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!', default='[0,1,4,10,15]', type=str)
     parser.add_argument('--ground_truth_p', help='ground_truth_p', default=0.0, type=float)
     parser.add_argument('--architecture', help='BERT or GPT', default='GPT', type=str)
@@ -544,17 +541,15 @@ if __name__ == '__main__':
             ['1','2','3'], ['0','2','3'], 
             ['0','1','3'], ['0','1'],['0']]
 
-    for log in ['BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
-                'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
-                'BPI%20Challenge%202017.xes.gz','BPIC15_1.xes',
-                'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
-                'helpdesk.csv']:
-        main(args, dt_object, combi=[log], layers=[[]])
-        # for transfer in [#'BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
-        #                  #'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
-        #                  #'BPI%20Challenge%202017.xes.gz','BPIC15_1.xes',
-        #                  #'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
-        #                  'helpdesk.csv']:
-        #         if log != transfer:
-        #             main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
+    for log in ['Road_Traffic_Fine_Management_Process.xes.gz',  'helpdesk.csv']:
+        #main(args, dt_object, pre_train=True, combi=[log], layers=[[]])
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
+                         'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
+                         'BPIC15_1.xes',
+                         'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+                         'helpdesk.csv']:
+                if log != transfer:
+                    #main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
+                    main(args, dt_object, pre_train=True, combi=[transfer], layers=[[]])
+		    break
 
