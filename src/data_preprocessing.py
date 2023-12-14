@@ -513,7 +513,8 @@ def denormalise(prediction, in_days=True):
 
 
 def download_logs(logs_meta, logs_dir):
-    if not os.path.exists(logs_dir): os.makedirs(logs_dir)
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
 
     for log_name in tqdm(logs_meta, desc="downloading logs"):
         remotefile = urlopen(logs_meta[log_name])

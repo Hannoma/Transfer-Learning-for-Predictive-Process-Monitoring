@@ -360,9 +360,6 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
                         if f'layers.{single}.' in name:
                             param.requires_grad = False
 
-            for name, param in new_model.named_parameters():
-                print(param.requires_grad)
-
             new_model.train()
 
             if args.architecture == 'BERT':
