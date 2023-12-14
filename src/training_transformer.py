@@ -542,6 +542,7 @@ if __name__ == '__main__':
               ['0', '1', '3'], ['0', '1'], ['0']]
 
     for log in ['Road_Traffic_Fine_Management_Process.xes.gz', 'helpdesk.csv']:
+        main(args, dt_object, pre_train=True, combi=[log], layers=[[]])
         for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz', 'BPI_Challenge_2012.xes.gz',
                          'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
                          'BPIC15_1.xes',
