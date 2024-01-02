@@ -11,10 +11,12 @@ import random
 import datetime
 import argparse
 import socket
-from similarity.damerau import Damerau # pip install strsim
+from similarity.damerau import Damerau  # pip install strsim
 import utils
 from fast_transformers.masking import TriangularCausalMask
 from copy import deepcopy
+
+from definitions import RESULTS_DIR
 
 
 def iterate_over_generated_suffixes(predictions=None):
@@ -85,7 +87,8 @@ def iterate_over_generated_suffixes(predictions=None):
             prediction_activity_suffix = []
             prediction_time_suffix_padded = predictions['times']['suffixes']['prediction'][prefix][i]
             prediction_time_suffix = []
-            prediction_time_denormalised_suffix_padded = predictions['times_denormalised']['suffixes']['prediction'][prefix][i]
+            prediction_time_denormalised_suffix_padded = \
+            predictions['times_denormalised']['suffixes']['prediction'][prefix][i]
             prediction_time_denormalised_suffix = []
 
             # In the worst case it stops at the length of the longest suffix
@@ -127,7 +130,9 @@ def iterate_over_generated_suffixes(predictions=None):
                 mae = 0.0
                 mae_denormalised = 0.0
             else:
-                damerau_levenshtein_similarity = 1.0 - damerau.distance(prediction_activity_suffix, target_activity_suffix) / max(len(prediction_activity_suffix), len(target_activity_suffix))
+                damerau_levenshtein_similarity = 1.0 - damerau.distance(prediction_activity_suffix,
+                                                                        target_activity_suffix) / max(
+                    len(prediction_activity_suffix), len(target_activity_suffix))
                 if len(target_time_suffix) == 0:
                     sum_target_time_suffix = 0.0
                 elif len(target_time_suffix) == 1:
@@ -159,7 +164,8 @@ def iterate_over_generated_suffixes(predictions=None):
             average_damerau_levenshtein_similarity += damerau_levenshtein_similarity
             average_mae += mae
             average_mae_denormalised += mae_denormalised
-            predictions['dls'][prefix].append(damerau_levenshtein_similarity) # in-place editing of the input dictionary
+            predictions['dls'][prefix].append(
+                damerau_levenshtein_similarity)  # in-place editing of the input dictionary
             predictions['mae'][prefix].append(mae)  # in-place editing of the input dictionary
             predictions['mae_denormalised'][prefix].append(mae_denormalised)  # in-place editing of the input dictionary
             predictions['evaluated_ids'][prefix].append(trace_id)  # in-place editing of the input dictionary
@@ -182,7 +188,8 @@ def iterate_over_generated_suffixes(predictions=None):
     return average_damerau_levenshtein_similarity, average_mae, average_mae_denormalised, nb_worst_situs, nb_all_situs
 
 
-def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None, sample=False):
+def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None,
+                   sample=False):
     prediction = ()
 
     # TODO prepare it for activity labels only
@@ -193,7 +200,8 @@ def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_inp
     input_position = input_sos
 
     for i in range(model_input_y[0].size(1)):
-        inter_position, decoder_hidden = model.decoder.cell(model.decoder.value_embedding(input_position), decoder_hidden)
+        inter_position, decoder_hidden = model.decoder.cell(model.decoder.value_embedding(input_position),
+                                                            decoder_hidden)
         output_position = model.decoder.readout(inter_position)
 
         if i == 0:
@@ -212,7 +220,8 @@ def seq_ae_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_inp
     return prediction
 
 
-def transformer_full_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None, sample=False):
+def transformer_full_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0,
+                             top_k=None, sample=False):
     # TODO prepare it for activity labels only
     # Semi open loop:
     model_input_x = model.value_embedding(model_input_x)
@@ -224,9 +233,13 @@ def transformer_full_predict(seq_ae_teacher_forcing_ratio, model, model_input_x,
     for i in range(model_input_y[0].size(1)):
         input_positions_embedded = model.value_embedding(input_positions)
         input_positions_embedded = model.position_embedding(input_positions_embedded)
-        inter_positions = model.self_attentional_block.decoder(input_positions_embedded, memory, tgt_mask=model.target_lookahead_mask[:input_positions[0].size(1), :input_positions[0].size(1)])
+        inter_positions = model.self_attentional_block.decoder(input_positions_embedded, memory,
+                                                               tgt_mask=model.target_lookahead_mask[
+                                                                        :input_positions[0].size(1),
+                                                                        :input_positions[0].size(1)])
         output_positions = model.readout(inter_positions)
-        a_decoded = utils.generate(output_positions[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k, sample=sample)
+        a_decoded = utils.generate(output_positions[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k,
+                                   sample=sample)
         a_pred = torch.cat((input_positions[0], a_decoded), dim=1)
         t_pred = torch.cat((input_positions[1], output_positions[1][:, -1, :].unsqueeze(1)), dim=1)
         input_positions = (a_pred, t_pred)
@@ -236,7 +249,8 @@ def transformer_full_predict(seq_ae_teacher_forcing_ratio, model, model_input_x,
     return prediction
 
 
-def rnn_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None, sample=False, max_length=None):
+def rnn_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_y, temperature=1.0, top_k=None,
+                sample=False, max_length=None):
     # TODO prepare it for activity labels only
     # init model wiht prefix input:
     prefix = model_input_x[0].size(1)
@@ -261,23 +275,24 @@ def rnn_predict(seq_ae_teacher_forcing_ratio, model, model_input_x, model_input_
 
 
 def gpt_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=False, min_prefix=2):
-    gpt_min_prefix = min_prefix + 1 # For fair comparison with other model architectures due to the [SOS] at first position
+    gpt_min_prefix = min_prefix + 1  # For fair comparison with other model architectures due to the [SOS] at first position
 
     batch_of_traces = {'activities': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                        'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                        'ids': {}}
 
-    for prefix in range(gpt_min_prefix, inp[0].size(1) + 1): # Plus one: we want the very last [EOS] predictions too
+    for prefix in range(gpt_min_prefix, inp[0].size(1) + 1):  # Plus one: we want the very last [EOS] predictions too
         # TODO prepare it for activity labels only
 
         # Initial input condition:
         input_condition = (inp[0][:, :prefix, :], inp[1][:, :prefix, :])
 
         # Open-loop inference:
-        for i in range(inp[0].size(1) + 1 - prefix): # very important -> the complete output is: [SOS] trace [EOS]
+        for i in range(inp[0].size(1) + 1 - prefix):  # very important -> the complete output is: [SOS] trace [EOS]
             causal_mask = TriangularCausalMask(input_condition[0].size(1), device=next(model.parameters()).device)
             output = model(input_condition, attn_mask=causal_mask)
-            a_decoded = utils.generate(output[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k, sample=sample)
+            a_decoded = utils.generate(output[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k,
+                                       sample=sample)
             a_pred = torch.cat((input_condition[0], a_decoded), dim=1)
             t_pred = torch.cat((input_condition[1], output[1][:, -1, :].unsqueeze(1)), dim=1)
             input_condition = (a_pred, t_pred)
@@ -285,12 +300,13 @@ def gpt_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=Fal
             del causal_mask
             del output
 
-        prediction = (input_condition[0][:, 1:, :], input_condition[1][:, 1:, :]) # Cut the starting [SOS] position
-        real_prefix = prefix - 1 # without the [SOS] position
+        prediction = (input_condition[0][:, 1:, :], input_condition[1][:, 1:, :])  # Cut the starting [SOS] position
+        real_prefix = prefix - 1  # without the [SOS] position
 
         batch_of_traces['activities']['prefixes'][real_prefix] = prediction[0][:, :real_prefix, :].tolist()
         batch_of_traces['times']['prefixes'][real_prefix] = prediction[1][:, :real_prefix, :].tolist()
-        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:, :].tolist()
+        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:,
+                                                                               :].tolist()
         batch_of_traces['times']['suffixes']['prediction'][real_prefix] = prediction[1][:, real_prefix:, :].tolist()
         batch_of_traces['activities']['suffixes']['target'][real_prefix] = target[0][:, real_prefix:].tolist()
         batch_of_traces['times']['suffixes']['target'][real_prefix] = target[1][:, real_prefix:, :].tolist()
@@ -304,7 +320,7 @@ def gpt_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=Fal
 
 
 def wavenet_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=False, min_prefix=2):
-    gpt_min_prefix = min_prefix + 1 # For fair comparison with other model architectures due to the [SOS] at first position
+    gpt_min_prefix = min_prefix + 1  # For fair comparison with other model architectures due to the [SOS] at first position
 
     batch_of_traces = {'activities': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                        'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
@@ -312,32 +328,35 @@ def wavenet_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample
 
     receptive_field = model.left_padding + 1
 
-    for prefix in range(gpt_min_prefix, inp[0].size(1) + 1): # Plus one: we want the very last [EOS] predictions too
+    for prefix in range(gpt_min_prefix, inp[0].size(1) + 1):  # Plus one: we want the very last [EOS] predictions too
         # TODO prepare it for activity labels only
 
         # Initial input condition:
         input_condition = (inp[0][:, :prefix, :], inp[1][:, :prefix, :])
 
         # Open-loop inference:
-        for i in range(inp[0].size(1) + 1 - prefix): # very important -> the complete output is: [SOS] trace [EOS]
+        for i in range(inp[0].size(1) + 1 - prefix):  # very important -> the complete output is: [SOS] trace [EOS]
             if input_condition[0].size(1) < receptive_field:
                 left_padding = receptive_field - input_condition[0].size(1)
             else:
                 left_padding = 0
-            output = model((input_condition[0][:, -receptive_field:, :], input_condition[1][:, -receptive_field:, :]), left_padding=left_padding)
-            a_decoded = utils.generate(output[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k, sample=sample)
+            output = model((input_condition[0][:, -receptive_field:, :], input_condition[1][:, -receptive_field:, :]),
+                           left_padding=left_padding)
+            a_decoded = utils.generate(output[0][:, -1, :].unsqueeze(1), temperature=temperature, top_k=top_k,
+                                       sample=sample)
             a_pred = torch.cat((input_condition[0], a_decoded), dim=1)
             t_pred = torch.cat((input_condition[1], output[1][:, -1, :].unsqueeze(1)), dim=1)
             input_condition = (a_pred, t_pred)
 
             del output
 
-        prediction = (input_condition[0][:, 1:, :], input_condition[1][:, 1:, :]) # Cut the starting [SOS] position
-        real_prefix = prefix - 1 # without the [SOS] position
+        prediction = (input_condition[0][:, 1:, :], input_condition[1][:, 1:, :])  # Cut the starting [SOS] position
+        real_prefix = prefix - 1  # without the [SOS] position
 
         batch_of_traces['activities']['prefixes'][real_prefix] = prediction[0][:, :real_prefix, :].tolist()
         batch_of_traces['times']['prefixes'][real_prefix] = prediction[1][:, :real_prefix, :].tolist()
-        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:, :].tolist()
+        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:,
+                                                                               :].tolist()
         batch_of_traces['times']['suffixes']['prediction'][real_prefix] = prediction[1][:, real_prefix:, :].tolist()
         batch_of_traces['activities']['suffixes']['target'][real_prefix] = target[0][:, real_prefix:].tolist()
         batch_of_traces['times']['suffixes']['target'][real_prefix] = target[1][:, real_prefix:, :].tolist()
@@ -357,7 +376,7 @@ def bert_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=Fa
                        'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                        'ids': {}}
 
-    for prefix in range(bert_min_prefix, inp[0].size(1)): # TODO validation of upper limit
+    for prefix in range(bert_min_prefix, inp[0].size(1)):  # TODO validation of upper limit
         # TODO prepare it for activity labels only
 
         if order == 'random' or order == 'l2r':
@@ -372,16 +391,19 @@ def bert_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=Fa
 
             # fully mask the suffix as step 0:
             a_input_condition[:, suffix_indexes, :] = float(model.mask_token) * torch.ones(
-                (a_input_condition.size(0), suffix_indexes.size(0), a_input_condition.size(2)), device=a_input_condition.device)
+                (a_input_condition.size(0), suffix_indexes.size(0), a_input_condition.size(2)),
+                device=a_input_condition.device)
             t_input_condition[:, suffix_indexes, :] = float(model.attributes_meta[1]['min_value']) * torch.ones(
-                (t_input_condition.size(0), suffix_indexes.size(0), t_input_condition.size(2)), device=t_input_condition.device)
+                (t_input_condition.size(0), suffix_indexes.size(0), t_input_condition.size(2)),
+                device=t_input_condition.device)
 
             for suffix_index in suffix_indexes:
                 model.mlm.method = 'fix_masks'
                 model.mlm.fix_masks = suffix_index
 
                 output = model((a_input_condition, t_input_condition), attn_mask=None)
-                a_decoded = utils.generate(output[0][:, suffix_index, :], temperature=temperature, top_k=top_k, sample=sample)
+                a_decoded = utils.generate(output[0][:, suffix_index, :], temperature=temperature, top_k=top_k,
+                                           sample=sample)
                 a_input_condition[:, suffix_index, :] = a_decoded
                 t_input_condition[:, suffix_index, :] = output[1][:, suffix_index, :]
 
@@ -392,7 +414,8 @@ def bert_predict(model, inp, target, ids, temperature=1.0, top_k=None, sample=Fa
 
         batch_of_traces['activities']['prefixes'][real_prefix] = prediction[0][:, :real_prefix, :].tolist()
         batch_of_traces['times']['prefixes'][real_prefix] = prediction[1][:, :real_prefix, :].tolist()
-        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:, :].tolist()
+        batch_of_traces['activities']['suffixes']['prediction'][real_prefix] = prediction[0][:, real_prefix:,
+                                                                               :].tolist()
         batch_of_traces['times']['suffixes']['prediction'][real_prefix] = prediction[1][:, real_prefix:, :].tolist()
         batch_of_traces['activities']['suffixes']['target'][real_prefix] = target[0][:, real_prefix:].tolist()
         batch_of_traces['times']['suffixes']['target'][real_prefix] = target[1][:, real_prefix:, :].tolist()
@@ -411,7 +434,6 @@ def iterate_over_traces_transformer(log_with_traces,
                                     model=None,
                                     device=None,
                                     subset=None):
-
     # TODO prepare it for activity labels only
     # TODO encode trace ids as integers then that could be tracked
 
@@ -450,7 +472,8 @@ def iterate_over_traces_transformer(log_with_traces,
             prediction = gpt_predict(model=model,
                                      inp=(a_s_i, t_s_i),
                                      target=(a_s_t, t_s_t),
-                                     ids=log_with_traces[subset + '_augmented_traces']['ids'][i * mini_batch[0].size(0):(i+1) * mini_batch[0].size(0)])
+                                     ids=log_with_traces[subset + '_augmented_traces']['ids'][
+                                         i * mini_batch[0].size(0):(i + 1) * mini_batch[0].size(0)])
         elif model.architecture == 'BERT':
             # The variable categorical target is an unsqueezed long so it has to be transformed into an unsqueezed float input:
             prediction = bert_predict(model=model,
@@ -472,10 +495,14 @@ def iterate_over_traces_transformer(log_with_traces,
 
             predictions['activities']['prefixes'][prefix] += deepcopy(prediction['activities']['prefixes'][prefix])
             predictions['times']['prefixes'][prefix] += deepcopy(prediction['times']['prefixes'][prefix])
-            predictions['activities']['suffixes']['prediction'][prefix] += deepcopy(prediction['activities']['suffixes']['prediction'][prefix])
-            predictions['times']['suffixes']['prediction'][prefix] += deepcopy(prediction['times']['suffixes']['prediction'][prefix])
-            predictions['activities']['suffixes']['target'][prefix] += deepcopy(prediction['activities']['suffixes']['target'][prefix])
-            predictions['times']['suffixes']['target'][prefix] += deepcopy(prediction['times']['suffixes']['target'][prefix])
+            predictions['activities']['suffixes']['prediction'][prefix] += deepcopy(
+                prediction['activities']['suffixes']['prediction'][prefix])
+            predictions['times']['suffixes']['prediction'][prefix] += deepcopy(
+                prediction['times']['suffixes']['prediction'][prefix])
+            predictions['activities']['suffixes']['target'][prefix] += deepcopy(
+                prediction['activities']['suffixes']['target'][prefix])
+            predictions['times']['suffixes']['target'][prefix] += deepcopy(
+                prediction['times']['suffixes']['target'][prefix])
             predictions['ids'][prefix] += deepcopy(prediction['ids'][prefix])
 
         del prediction
@@ -496,7 +523,6 @@ def iterate_over_traces_wavenet(log_with_traces,
                                 model=None,
                                 device=None,
                                 subset=None):
-
     # TODO prepare it for activity labels only
     # TODO encode trace ids as integers then that could be tracked
 
@@ -535,7 +561,8 @@ def iterate_over_traces_wavenet(log_with_traces,
             prediction = wavenet_predict(model=model,
                                          inp=(a_s_i, t_s_i),
                                          target=(a_s_t, t_s_t),
-                                         ids=log_with_traces[subset + '_augmented_traces']['ids'][i * mini_batch[0].size(0):(i+1) * mini_batch[0].size(0)])
+                                         ids=log_with_traces[subset + '_augmented_traces']['ids'][
+                                             i * mini_batch[0].size(0):(i + 1) * mini_batch[0].size(0)])
 
         for prefix in prediction['activities']['prefixes'].keys():
             if prefix not in predictions['activities']['prefixes'].keys():
@@ -579,7 +606,6 @@ def iterate_over_prefixes_ae(log_with_prefixes,
                              device=None,
                              subset=None,
                              to_wrap_into_torch_dataset=None):
-
     # TODO prepare it for activity labels only
     predictions = {'activities': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                    'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
@@ -662,7 +688,6 @@ def iterate_over_prefixes_transformer_full(log_with_prefixes,
                                            device=None,
                                            subset=None,
                                            to_wrap_into_torch_dataset=None):
-
     # TODO prepare it for activity labels only
     predictions = {'activities': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                    'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
@@ -746,7 +771,6 @@ def iterate_over_prefixes_rnn(log_with_prefixes,
                               subset=None,
                               to_wrap_into_torch_dataset=None,
                               max_length=None):
-
     # TODO prepare it for activity labels only
     predictions = {'activities': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
                    'times': {'prefixes': {}, 'suffixes': {'target': {}, 'prediction': {}}},
@@ -1067,7 +1091,7 @@ def generate_suffixes_rnn_full(checkpoint_file, log_file, args, path):
                                                 to_wrap_into_torch_dataset=args.to_wrap_into_torch_dataset,
                                                 max_length=max_length)
         del log_with_prefixes
-        return  predictions
+        return predictions
 
 
 def generate_suffixes_transformer(checkpoint_file, log_file, args, path):
@@ -1117,10 +1141,10 @@ def generate_suffixes_transformer(checkpoint_file, log_file, args, path):
                                attributes_meta=attributes_meta,
                                time_attribute_concatenated=args.time_attribute_concatenated,
                                nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
-    
+
     device = torch.device('cpu')
     model.load_state_dict(torch.load(checkpoint_file, map_location=device)['model_state_dict'])
-    
+
     if args.device == 'GPU':
         model.cuda()
     model.eval()
@@ -1132,8 +1156,9 @@ def generate_suffixes_transformer(checkpoint_file, log_file, args, path):
         del augmented_log
         return predictions
 
+
 def generate(datetime, model_type, args, combi=[]):
-    path = os.path.join(f'results-{args.random_seed}', model_type)
+    path = os.path.join(RESULTS_DIR, model_type)
 
     # Walk through all the log-result directories:
     log_path = os.path.join(path, combi[-1])
@@ -1148,12 +1173,12 @@ def generate(datetime, model_type, args, combi=[]):
 
     with open(split_log_file_path) as f_in:
         log_file = json.load(f_in)
-    
+
     for checkpoint_file in checkpoint_files:
         number = checkpoint_file[-5]
 
-        predictions = generate_suffixes_transformer(os.path.join(checkpoint_path, checkpoint_file), log_file, args, log_path)
-
+        predictions = generate_suffixes_transformer(os.path.join(checkpoint_path, checkpoint_file), log_file, args,
+                                                    log_path)
 
         predictions['log'] = combi[-1]
 
@@ -1161,15 +1186,16 @@ def generate(datetime, model_type, args, combi=[]):
 
         if not os.path.exists(pred_path):
             os.mkdir(pred_path)
-        
-        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'), 'w') as fp:
+
+        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'),
+                  'w') as fp:
             json.dump(predictions, fp)
-        
+
         del predictions
 
 
 def evaluate_generation(datetime, model_type, combi=[]):
-    path = os.path.join(f'results-{args.random_seed}', model_type)
+    path = os.path.join(RESULTS_DIR, model_type)
     # Walk through all the log-result directories:
     log_path = os.path.join(path, combi[-1])
     save_path = os.path.join(path, 'Predictions')
@@ -1191,7 +1217,8 @@ def evaluate_generation(datetime, model_type, combi=[]):
         results = {model_type: {}}
         results[model_type][predictions['log']] = {}
 
-        average_damerau_levenshtein_similarity, average_mae, average_mae_denormalised, nb_worst_situs, nb_all_situs = iterate_over_generated_suffixes(predictions=predictions)
+        average_damerau_levenshtein_similarity, average_mae, average_mae_denormalised, nb_worst_situs, nb_all_situs = iterate_over_generated_suffixes(
+            predictions=predictions)
 
         results[model_type][predictions['log']]['dls'] = "{:.4f}".format(average_damerau_levenshtein_similarity)
         results[model_type][predictions['log']]['mae'] = "{:.4f}".format(average_mae)
@@ -1203,14 +1230,14 @@ def evaluate_generation(datetime, model_type, combi=[]):
         results[model_type][predictions['log']]['mae_denormalised_per_prefix'] = predictions['mae_denormalised']
         results[model_type][predictions['log']]['id_per_prefix'] = predictions['evaluated_ids']
 
-        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'), 'w') as fp:
+        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'),
+                  'w') as fp:
             json.dump(results[model_type][predictions['log']], fp)
 
         del results
         del predictions
 
-
-    # Merge evaluation results (per model type):
+        # Merge evaluation results (per model type):
         suffix_evaluation_results = {model_type: {}}
 
         with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json')) as f_in:
@@ -1218,11 +1245,13 @@ def evaluate_generation(datetime, model_type, combi=[]):
 
         suffix_evaluation_results[model_type][combi[0]] = suffix_evaluation_result
 
-        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'), 'w') as fp:
+        with open(os.path.join(pred_path, f'suffix_generation_result_{combi[0]}_{combi[-1]}[{number}].json'),
+                  'w') as fp:
             json.dump(suffix_evaluation_results, fp)
 
         del suffix_evaluation_results
         del suffix_evaluation_result
+
 
 def main(args, dt_object, combi=[]):
     if not args.random:
@@ -1243,7 +1272,8 @@ def main(args, dt_object, combi=[]):
         generate(datetime=datetime, model_type=model_type, args=args, combi=combi)
     if args.dls_evaluation:
         evaluate_generation(datetime, model_type, combi=combi)
-    
+
+
 if __name__ == '__main__':
     dt_object = datetime.datetime.now()
     print(dt_object)
@@ -1254,9 +1284,11 @@ if __name__ == '__main__':
     parser.add_argument('--n_layers', help='number of layers', default=4, type=int)
     parser.add_argument('--n_heads', help='number of heads', default=4, type=int)
     parser.add_argument('--training_batch_size', help='number of training samples in mini-batch', default=512, type=int)
-    parser.add_argument('--validation_batch_size', help='number of validation samples in mini-batch', default=512, type=int)
+    parser.add_argument('--validation_batch_size', help='number of validation samples in mini-batch', default=512,
+                        type=int)
     parser.add_argument('--training_mlm_method', help='training MLM method', default='BERT', type=str)
-    parser.add_argument('--validation_mlm_method', help='validation MLM method', default='fix_masks', type=str)  # we would like to end up with some non-stochastic & at least pseudo likelihood metric
+    parser.add_argument('--validation_mlm_method', help='validation MLM method', default='fix_masks',
+                        type=str)  # we would like to end up with some non-stochastic & at least pseudo likelihood metric
     parser.add_argument('--mlm_masking_prob', help='mlm_masking_prob', default=0.15, type=float)
     parser.add_argument('--dropout_prob', help='dropout_prob', default=0.1, type=float)
     parser.add_argument('--validation_split', help='validation_split', default=0.2, type=float)
@@ -1264,7 +1296,8 @@ if __name__ == '__main__':
     parser.add_argument('--random_seed', help='random_seed', default=2504, type=int)
     parser.add_argument('--random', help='if random', default=False, type=bool)
     parser.add_argument('--gpu', help='gpu', default=0, type=int)
-    parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!', default='[0,1,4,10,15]', type=str)
+    parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!',
+                        default='[0,1,4,10,15]', type=str)
     parser.add_argument('--ground_truth_p', help='ground_truth_p', default=0.0, type=float)
     parser.add_argument('--time_attribute_concatenated', help='time_attribute_concatenated', default=False, type=bool)
     parser.add_argument('--device', help='GPU or CPU', default='GPU', type=str)

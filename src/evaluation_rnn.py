@@ -16,6 +16,9 @@ from fast_transformers.masking import TriangularCausalMask
 from copy import deepcopy
 import sys
 
+from definitions import RESULTS_DIR
+
+
 def iterate_over_generated_suffixes(predictions=None):
     damerau = Damerau()
     nb_worst_situs = 0
@@ -1134,7 +1137,7 @@ def generate_suffixes_transformer(checkpoint_file, log_file, args, path):
         return predictions
 
 def generate(datetime, model_type, args, combi=[]):
-    path = os.path.join(f'results-{args.random_seed}', model_type)
+    path = os.path.join(RESULTS_DIR, model_type)
 
     # Walk through all the log-result directories:
     log_path = os.path.join(path, combi[-1])
@@ -1170,7 +1173,7 @@ def generate(datetime, model_type, args, combi=[]):
 
 
 def evaluate_generation(datetime, model_type, combi=[]):
-    path = os.path.join(f'results-{args.random_seed}', model_type)
+    path = os.path.join(RESULTS_DIR, model_type)
 
     # Walk through all the log-result directories:
     log_path = os.path.join(path, combi[-1])
@@ -1265,7 +1268,7 @@ if __name__ == '__main__':
     parser.add_argument('--validation_indexes', help='list of validation_indexes NO SPACES BETWEEN ITEMS!', default='[0,1,4,10,15]', type=str)
     parser.add_argument('--ground_truth_p', help='ground_truth_p', default=0.0, type=float)
     parser.add_argument('--time_attribute_concatenated', help='time_attribute_concatenated', default=False, type=bool)
-    parser.add_argument('--device', help='GPU or CPU', default='CPU', type=str)
+    parser.add_argument('--device', help='GPU or CPU', default='GPU', type=str)
     parser.add_argument('--pad_token', help='pad_token', default=0, type=int)
     parser.add_argument('--to_wrap_into_torch_dataset', help='to_wrap_into_torch_dataset', default=True, type=bool)
     parser.add_argument('--seq_ae_teacher_forcing_ratio', help='seq_ae_teacher_forcing_ratio', default=0.0, type=float)
