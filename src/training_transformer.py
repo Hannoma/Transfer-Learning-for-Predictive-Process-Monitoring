@@ -202,7 +202,7 @@ def main(args, dt_object, pre_train=True, combi=[], layers=[]):
                                    time_attribute_concatenated=args.time_attribute_concatenated,
                                    nb_special_tokens=attributes_meta[0]['nb_special_tokens']).to(device=args.gpu)
 
-        checkpoint = torch.load(f'./results/GPT/{combi[0]}/checkpoints/model-{combi[0]}.pt')
+        checkpoint = torch.load(f'{path}/checkpoints/model-{combi[0]}.pt')
         model.load_state_dict(checkpoint['model_state_dict'])
 
     #######################################################################################
