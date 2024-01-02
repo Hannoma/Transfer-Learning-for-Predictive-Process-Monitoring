@@ -31,19 +31,19 @@ with open(os.path.join(CONFIG_DIR, 'logs_meta.json')) as f:
 #     filename = params["filename"]
 #     urlretrieve(logs_meta[log_name], os.path.join(LOGS_DIR, filename))
 
-for file_name in os.listdir(LOGS_DIR):
-    if file_name.endswith('.gz'):
-        gz_file_name = os.path.join(LOGS_DIR, file_name)
-        with gzip.open(gz_file_name, 'rb') as f_in:
-            with open(gz_file_name[:-3], 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
+# for file_name in os.listdir(LOGS_DIR):
+#     if file_name.endswith('.gz'):
+#         gz_file_name = os.path.join(LOGS_DIR, file_name)
+#         with gzip.open(gz_file_name, 'rb') as f_in:
+#             with open(gz_file_name[:-3], 'wb') as f_out:
+#                 shutil.copyfileobj(f_in, f_out)
 
 trace_length_distributions = {}
 event_frequency_distributions = {}
 event_frequency_distributions_colors = {}
 
 for file_name in sorted(os.listdir(LOGS_DIR)):
-    if file_name.endswith('.xes'):
+    if file_name.endswith('.xes') or file_name.endswith('.xes.gz'):
         xes_file_name = os.path.join(LOGS_DIR, file_name)
         log = xes_importer.apply(xes_file_name)
         event_frequency_distribution = {}
@@ -109,6 +109,19 @@ logs = []
 for log_name in trace_length_distributions.keys():
     logs.append(log_name)
 logs.sort()
+
+for log_name in logs:
+    number_of_traces = sum(trace_length_distributions[log_name].values())
+    number_of_events = sum(event_frequency_distributions[log_name].values())
+    print(log_name)
+    print('vocab size: ' + str(len(event_frequency_distributions[log_name])))
+    print('#traces: ' + str(number_of_traces))
+    print('#events: ' + str(number_of_events))
+    print('max trace length: ' + str(max(trace_length_distributions[log_name].keys())))
+    print('min trace length: ' + str(min(trace_length_distributions[log_name].keys())))
+    print('avg trace length: ' + str(sum([k * v for k, v in trace_length_distributions[log_name].items()]) / number_of_traces))
+    print('avg event per trace: ' + str(number_of_events / number_of_traces))
+    print('')
 
 # if to_exclude_dataset:
 #     new_logs = []
