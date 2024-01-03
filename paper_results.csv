@@ -1,55 +1,55 @@
-,Log,Model,Setting,DLS,MAE,Layering freezing
-0,BPI12, GPT,base,0.1606,77.19,
-1,BPI12, GPT,helpdesk, 0.1586, 67.15,"[0,1,2,3]"
-2,BPI12, GPT,RTFMP, 0.1509, 54.83,"[0,1]"
-3,BPI12, LSTM,base,0.0622,101.78,
-4,BPI12, LSTM,helpdesk, 0.1377, 38.92,"[0,1,2,3]"
-5,BPI12, LSTM,RTFMP, 0.1188, 68.44,"[0,1]"
-6,BPI13 Closed, GPT,base,0.4712,585.01,
-7,BPI13 Closed, GPT,helpdesk, 0.6850, 111.47,"[0,1,3]"
-8,BPI13 Closed, GPT,RTFMP, 0.7289, 97.29,[0]
-9,BPI13 Closed, LSTM,base,0.5014,154.69,
-10,BPI13 Closed, LSTM,helpdesk, 0.6959, 95.70,"[0,1,3]"
-11,BPI13 Closed, LSTM,RTFMP, 0.6976, 97.19,[0]
-12,BPI13 Incidents, GPT,base,0.2445,76.94,
-13,BPI13 Incidents, GPT,helpdesk, 0.3082, 26.83,"[0,1,2]"
-14,BPI13 Incidents, GPT,RTFMP, 0.3021, 23.19,[0]
-15,BPI13 Incidents, LSTM,base,0.2652,213.14,
-16,BPI13 Incidents, LSTM,helpdesk, 0.4893, 43.26,"[0,1,2]"
-17,BPI13 Incidents, LSTM,RTFMP, 0.4902, 19.39,[0]
-18,BPI13 Open, GPT,base,0.345,105.17,
-19,BPI13 Open, GPT,helpdesk, 0.5157, 52.55,"[0,1,2]"
-20,BPI13 Open, GPT,RTFMP, 0.4171, 42.79,[0]
-21,BPI13 Open, LSTM,base,0.45,47.7,
-22,BPI13 Open, LSTM,helpdesk, 0.4918, 47.31,"[0,1,2]"
-23,BPI13 Open, LSTM,RTFMP, 0.5341, 49.81,[0]
-24,BPI15, GPT,base,0.2554,285.35,
-25,BPI15, GPT,helpdesk, 0.0213, 211.66,
-26,BPI15, GPT,RTFMP, 0.0169, 164.65,
-27,BPI15, LSTM,base,0.0239,2357.0,
-28,BPI15, LSTM,helpdesk, 0.0332, 331.32,
-29,BPI15, LSTM,RTFMP, 0.0340, 827.97,
-30,BPI17, GPT,base,0.1428,36.85,
-31,BPI17, GPT,helpdesk, 0.1424, 32.50,"[0,1]"
-32,BPI17, GPT,RTFMP, 0.1423, 57.23,"[0,1]"
-33,BPI17, LSTM,base,0.0549,36.44,
-34,BPI17, LSTM,helpdesk, 0.0598, 24.65,"[0,1]"
-35,BPI17, LSTM,RTFMP, 0.0460, 35.72,"[0,1]"
-36,Sepsis, GPT,base,0.0876,1078.09,
-37,Sepsis, GPT,helpdesk, 0.1042, 82.99,"[1,2,3]"
-38,Sepsis, GPT,RTFMP, 0.1030, 142.14,"[0,1]"
-39,Sepsis, LSTM,base,0.097,214.69,
-40,Sepsis, LSTM,helpdesk, 0.1536, 33.18,"[1,2,3]"
-41,Sepsis, LSTM,RTFMP, 0.1992, 35.87,"[0,1]"
-42,RTFMP, GPT,base,0.825,158.02,
-43,RTFMP, GPT,helpdesk, 0.8275, 156.72,
-44,RTFMP, GPT,RTFMP, -, -,
-45,RTFMP, LSTM,base,0.586,535.44,
-46,RTFMP, LSTM,helpdesk, 0.7564, 183.19,
-47,RTFMP, LSTM,RTFMP, -, -,
-48,Helpdesk, GPT,base,0.8479,4.13,
-49,Helpdesk, GPT,helpdesk, -, -,
-50,Helpdesk, GPT,RTFMP, 0.8473, 4.15,"[0,1]"
-51,Helpdesk, LSTM,base,0.8556,4.01,
-52,Helpdesk, LSTM,helpdesk, -, -,
-53,Helpdesk, LSTM,RTFMP, 0.8599, 4.17,"[0,1]"
+log,model,setting,dls,mae,freezed_layers
+BPI12,GPT,base,0.1606,77.19,
+BPI12,GPT,helpdesk,0.1586,67.15,"[0,1,2,3]"
+BPI12,GPT,RTFMP,0.1509,54.83,"[0,1]"
+BPI12,LSTM,base,0.0622,101.78,
+BPI12,LSTM,helpdesk,0.1377,38.92,"[0,1,2,3]"
+BPI12,LSTM,RTFMP,0.1188,68.44,"[0,1]"
+BPI13 Closed,GPT,base,0.4712,585.01,
+BPI13 Closed,GPT,helpdesk,0.6850,111.47,"[0,1,3]"
+BPI13 Closed,GPT,RTFMP,0.7289,97.29,[0]
+BPI13 Closed,LSTM,base,0.5014,154.69,
+BPI13 Closed,LSTM,helpdesk,0.6959,95.70,"[0,1,3]"
+BPI13 Closed,LSTM,RTFMP,0.6976,97.19,[0]
+BPI13 Incidents,GPT,base,0.2445,76.94,
+BPI13 Incidents,GPT,helpdesk,0.3082,26.83,"[0,1,2]"
+BPI13 Incidents,GPT,RTFMP,0.3021,23.19,[0]
+BPI13 Incidents,LSTM,base,0.2652,213.14,
+BPI13 Incidents,LSTM,helpdesk,0.4893,43.26,"[0,1,2]"
+BPI13 Incidents,LSTM,RTFMP,0.4902,19.39,[0]
+BPI13 Open,GPT,base,0.345,105.17,
+BPI13 Open,GPT,helpdesk,0.5157,52.55,"[0,1,2]"
+BPI13 Open,GPT,RTFMP,0.4171,42.79,[0]
+BPI13 Open,LSTM,base,0.45,47.7,
+BPI13 Open,LSTM,helpdesk,0.4918,47.31,"[0,1,2]"
+BPI13 Open,LSTM,RTFMP,0.5341,49.81,[0]
+BPI15,GPT,base,0.2554,285.35,
+BPI15,GPT,helpdesk,0.0213,211.66,"[0,2,3]"
+BPI15,GPT,RTFMP,0.0169,164.65,"[0,1,2,3]"
+BPI15,LSTM,base,0.0239,2357.0,
+BPI15,LSTM,helpdesk,0.0332,331.32,"[0,2,3]"
+BPI15,LSTM,RTFMP,0.0340,827.97,"[0,1,2,3]"
+BPI17,GPT,base,0.1428,36.85,
+BPI17,GPT,helpdesk,0.1424,32.50,"[0,1]"
+BPI17,GPT,RTFMP,0.1423,57.23,"[0,1]"
+BPI17,LSTM,base,0.0549,36.44,
+BPI17,LSTM,helpdesk,0.0598,24.65,"[0,1]"
+BPI17,LSTM,RTFMP,0.0460,35.72,"[0,1]"
+Sepsis,GPT,base,0.0876,1078.09,
+Sepsis,GPT,helpdesk,0.1042,82.99,"[1,2,3]"
+Sepsis,GPT,RTFMP,0.1030,142.14,"[0,1]"
+Sepsis,LSTM,base,0.097,214.69,
+Sepsis,LSTM,helpdesk,0.1536,33.18,"[1,2,3]"
+Sepsis,LSTM,RTFMP,0.1992,35.87,"[0,1]"
+RTFMP,GPT,base,0.825,158.02,
+RTFMP,GPT,helpdesk,0.8275,156.72,"[0,2,3]"
+RTFMP,GPT,RTFMP,-,-,
+RTFMP,LSTM,base,0.586,535.44,
+RTFMP,LSTM,helpdesk,0.7564,183.19,"[0,2,3]"
+RTFMP,LSTM,RTFMP,-,-,
+Helpdesk,GPT,base,0.8479,4.13,
+Helpdesk,GPT,helpdesk,-,-,
+Helpdesk,GPT,RTFMP,0.8473,4.15,"[0,1]"
+Helpdesk,LSTM,base,0.8556,4.01,
+Helpdesk,LSTM,helpdesk,-,-,
+Helpdesk,LSTM,RTFMP,0.8599,4.17,"[0,1]"
