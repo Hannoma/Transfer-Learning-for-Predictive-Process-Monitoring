@@ -1,0 +1,255 @@
+architecture,log,setting,freezed_layers,dls,mae,mae_denormalised,nb_worst_situs
+rnn,BPI%20Challenge%202017.xes.gz,base,,0.0691,0.7416,100.9505,223449
+rnn,BPI%20Challenge%202017.xes.gz,RTFMP,"['0', '1', '2', '3']",0.0372,5.1177,696.6516,227572
+rnn,BPIC15_1.xes,base,,0.0264,2.6185,2549.0971,9359
+rnn,BPIC15_1.xes,helpdesk,"['0', '1', '2', '3']",0.0226,2.4174,2353.3574,9307
+rnn,BPIC15_1.xes,helpdesk,"['0', '1', '2']",0.0323,1.8449,1795.9604,9226
+rnn,BPIC15_1.xes,helpdesk,"['1', '2', '3']",0.0235,1.3222,1287.1114,9155
+rnn,BPIC15_1.xes,helpdesk,"['0', '2', '3']",0.0261,2.3609,2298.3564,9124
+rnn,BPIC15_1.xes,helpdesk,"['0', '1', '3']",0.0225,2.2110,2152.4007,9330
+rnn,BPIC15_1.xes,helpdesk,"['0', '1']",0.0238,1.1892,1157.6901,9277
+rnn,BPIC15_1.xes,helpdesk,['0'],0.0244,0.8626,839.7209,9164
+rnn,BPIC15_1.xes,RTFMP,"['0', '1', '2', '3']",0.0305,4.7238,4598.5454,9309
+rnn,BPIC15_1.xes,RTFMP,"['0', '1', '2']",0.0262,0.9414,916.4555,9320
+rnn,BPIC15_1.xes,RTFMP,"['1', '2', '3']",0.0264,1.0785,1049.8700,9295
+rnn,BPIC15_1.xes,RTFMP,"['0', '2', '3']",0.0295,1.8587,1809.4069,8892
+rnn,BPIC15_1.xes,RTFMP,"['0', '1', '3']",0.0901,0.0616,60.0098,0
+rnn,BPIC15_1.xes,RTFMP,"['0', '1']",0.0272,1.9953,1942.3896,9192
+rnn,BPIC15_1.xes,RTFMP,['0'],0.0272,2.2864,2225.7599,9313
+rnn,BPIC15_1.xes,RTFMP_filtered,"['0', '1', '2']",0.0316,1.7116,1666.2221,9810
+rnn,BPIC15_1.xes,RTFMP_filtered,['0'],0.0459,2.5342,2467.0440,8254
+rnn,BPI_Challenge_2012.xes.gz,base,,0.1032,0.3490,35.8917,46044
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '1', '2', '3']",0.1082,2.8834,296.5555,34540
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '1', '2']",0.0696,3.9636,407.6543,46754
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['1', '2', '3']",0.0682,0.7953,81.8017,47065
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '2', '3']",0.0688,4.5420,467.1459,47116
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '1', '3']",0.0705,1.9249,197.9737,47072
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '1']",0.1321,1.5325,157.6222,11201
+rnn,BPI_Challenge_2012.xes.gz,helpdesk,['0'],0.0769,2.9089,299.1822,46298
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '1', '2', '3']",0.0954,4.5249,465.3916,45878
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '1', '2']",0.0635,6.4456,662.9268,46143
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['1', '2', '3']",0.0831,0.4762,48.9789,46760
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '2', '3']",0.0675,0.1524,15.6713,47085
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '1', '3']",0.1759,0.1095,11.2646,0
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '1']",0.0770,3.2352,332.7393,45126
+rnn,BPI_Challenge_2012.xes.gz,RTFMP,['0'],0.0568,0.3840,39.4959,47103
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,BPIC15,"['0', '1', '2']",0.5062,0.3299,743.9251,414
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,BPIC15,['0'],0.7123,0.0450,101.5087,0
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,base,,0.5517,0.1137,256.2956,354
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '2', '3']",0.3434,0.5997,1352.2404,724
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '2']",0.4370,0.0666,150.1526,545
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['1', '2', '3']",0.6891,0.0603,135.9543,1
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '2', '3']",0.4658,0.0679,153.1793,474
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '3']",0.6810,0.0416,93.7055,1
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1']",0.4056,0.5053,1139.3475,586
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,['0'],0.4054,0.1442,325.0621,603
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '2', '3']",0.5398,0.0602,135.8353,402
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '2']",0.4938,0.5564,1254.5578,469
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['1', '2', '3']",0.6951,0.0401,90.3158,0
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '2', '3']",0.5270,0.2354,530.6773,412
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '3']",0.7027,0.0441,99.4977,0
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1']",0.5132,0.6817,1537.0153,440
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,['0'],0.5709,0.0442,99.6822,0
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.7015,0.0521,117.5060,0
+rnn,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP_filtered,['0'],0.7131,0.0618,139.2390,0
+rnn,BPI_Challenge_2013_incidents.xes.gz,BPIC15,"['0', '1', '2']",0.2604,2.4387,1761.3357,8772
+rnn,BPI_Challenge_2013_incidents.xes.gz,BPIC15,['0'],0.2610,1.6363,1181.8078,8750
+rnn,BPI_Challenge_2013_incidents.xes.gz,base,,0.2600,0.3158,228.1152,8496
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '2', '3']",0.2603,0.1100,79.4819,8480
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '2']",0.2608,1.2027,868.6197,8456
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['1', '2', '3']",0.4880,0.0246,17.7613,0
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '2', '3']",0.2608,2.1768,1572.2026,8455
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '3']",0.2605,0.5832,421.2483,8471
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1']",0.2609,1.5923,1150.0322,8448
+rnn,BPI_Challenge_2013_incidents.xes.gz,helpdesk,['0'],0.2610,1.3417,969.0523,8461
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '2', '3']",0.3086,0.4124,297.8369,6975
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '2']",0.2619,4.0357,2914.8295,8411
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['1', '2', '3']",0.2601,0.5710,412.4298,8489
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '2', '3']",0.2601,1.8756,1354.6349,8495
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '3']",0.2610,1.1265,813.5936,8457
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1']",0.2601,0.7632,551.2482,8496
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP,['0'],0.2602,1.7126,1236.9015,8482
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.2637,1.7489,1263.1254,9311
+rnn,BPI_Challenge_2013_incidents.xes.gz,RTFMP_filtered,['0'],0.2640,1.8241,1317.4458,9301
+rnn,BPI_Challenge_2013_open_problems.xes.gz,BPIC15,"['0', '1', '2']",0.4670,0.0427,47.8247,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,BPIC15,['0'],0.3846,0.2172,243.4917,111
+rnn,BPI_Challenge_2013_open_problems.xes.gz,base,,0.4435,0.0329,36.9043,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '2', '3']",0.4689,0.0404,45.2497,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '2']",0.4678,0.0376,42.1684,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['1', '2', '3']",0.4867,0.0436,48.8796,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '2', '3']",0.4366,0.0385,43.1897,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '3']",0.4005,0.2085,233.7702,119
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1']",0.4939,0.0368,41.2559,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,['0'],0.4660,0.0441,49.3892,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '2', '3']",0.4442,0.0464,52.0521,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '2']",0.3392,0.3891,436.1780,181
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['1', '2', '3']",0.3376,0.3358,376.4075,178
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '2', '3']",0.4740,0.0490,54.9519,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '3']",0.4578,0.0375,42.0102,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1']",0.4358,0.1847,207.0711,31
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,['0'],0.4487,0.0357,39.9715,0
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.4077,0.3668,411.1964,118
+rnn,BPI_Challenge_2013_open_problems.xes.gz,RTFMP_filtered,['0'],0.5154,0.0494,55.3373,0
+rnn,helpdesk.csv,BPIC15,"['0', '1', '2']",0.8367,0.0780,3.9104,0
+rnn,helpdesk.csv,BPIC15,['0'],0.8566,0.0758,3.7994,0
+rnn,helpdesk.csv,base,,0.8476,0.0819,4.1042,0
+rnn,helpdesk.csv,RTFMP,"['0', '1', '2', '3']",0.7501,0.1066,5.3444,292
+rnn,helpdesk.csv,RTFMP,"['0', '1', '2']",0.8494,0.0807,4.0471,0
+rnn,helpdesk.csv,RTFMP,"['1', '2', '3']",0.8473,0.0822,4.1192,0
+rnn,helpdesk.csv,RTFMP,"['0', '2', '3']",0.8498,0.0804,4.0315,0
+rnn,helpdesk.csv,RTFMP,"['0', '1', '3']",0.8463,0.0812,4.0726,0
+rnn,helpdesk.csv,RTFMP,"['0', '1']",0.8486,0.0825,4.1336,0
+rnn,helpdesk.csv,RTFMP,['0'],0.8493,0.0801,4.0135,0
+rnn,helpdesk.csv,RTFMP_filtered,"['0', '1', '2']",0.8620,0.0786,3.9398,0
+rnn,helpdesk.csv,RTFMP_filtered,['0'],0.8622,0.0771,3.8664,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,BPIC15,"['0', '1', '2']",0.6974,0.0569,239.9939,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,BPIC15,['0'],0.6974,0.0551,232.4893,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '2', '3']",0.6088,0.4370,1844.4015,20764
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '2']",0.4950,0.1774,748.8624,38453
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['1', '2', '3']",0.6977,0.0669,282.4014,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '2', '3']",0.6978,0.0488,206.1083,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '3']",0.3794,0.3421,1444.1986,52778
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1']",0.3659,0.2634,1111.8468,53402
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,['0'],0.6629,0.0590,248.8831,0
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,base,,0.3716,0.1766,745.2318,53597
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.3659,1.0749,4536.9904,53782
+rnn,Road_Traffic_Fine_Management_Process.xes.gz,RTFMP_filtered,['0'],0.8177,0.0426,179.8191,0
+rnn,RTFMP_filtered.xes,base,,0.5712,0.0645,272.3016,0
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,BPIC15,"['0', '1', '2']",0.1058,0.4137,172.6171,2390
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,BPIC15,['0'],0.1753,0.1314,54.8358,0
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '2', '3']",0.0552,3.0919,1290.1126,2621
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '2']",0.1586,1.2573,524.6366,1012
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['1', '2', '3']",0.0904,4.8766,2034.7989,2355
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '2', '3']",0.0598,6.5224,2721.5231,2593
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '3']",0.0983,2.3203,968.1762,2138
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1']",0.0573,2.3126,964.9706,2608
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,['0'],0.1187,8.1859,3415.6524,2017
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '2', '3']",0.0646,7.3697,3075.0658,2590
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '2']",0.0954,4.0402,1685.8110,2547
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['1', '2', '3']",0.2195,0.0810,33.8080,0
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '2', '3']",0.0668,2.3460,978.9050,2556
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '3']",0.0765,3.0806,1285.4082,2372
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1']",0.2154,0.0794,33.1198,0
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,['0'],0.1153,4.9646,2071.5384,1884
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.0734,5.8221,2429.3135,2527
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP_filtered,['0'],0.0950,1.2984,541.7548,2647
+rnn,Sepsis%20Cases%20-%20Event%20Log.xes.gz,base,,0.2339,0.0801,33.4105,0
+GPT,BPIC15_1.xes,base,,0.1519,0.1305,126.9996,7860
+GPT,BPIC15_1.xes,helpdesk,"['0', '1', '2', '3']",0.0152,0.6167,600.3799,9633
+GPT,BPIC15_1.xes,helpdesk,"['0', '1', '2']",0.0197,0.2460,239.4790,9632
+GPT,BPIC15_1.xes,helpdesk,"['1', '2', '3']",0.0120,0.5112,497.6639,9634
+GPT,BPIC15_1.xes,helpdesk,"['0', '2', '3']",0.0191,0.2645,257.4874,9634
+GPT,BPIC15_1.xes,helpdesk,"['0', '1', '3']",0.0220,0.1351,131.5302,9566
+GPT,BPIC15_1.xes,helpdesk,"['0', '1']",0.0090,0.2687,261.5312,9634
+GPT,BPIC15_1.xes,helpdesk,['0'],0.0450,0.4156,404.6302,8586
+GPT,BPIC15_1.xes,RTFMP,"['0', '1', '2', '3']",0.0146,0.5156,501.9624,8372
+GPT,BPIC15_1.xes,RTFMP,"['0', '1', '2']",0.0118,0.3341,325.2568,9358
+GPT,BPIC15_1.xes,RTFMP,"['1', '2', '3']",0.0073,0.3609,351.3056,9581
+GPT,BPIC15_1.xes,RTFMP,"['0', '2', '3']",0.0138,1.5588,1517.4706,8771
+GPT,BPIC15_1.xes,RTFMP,"['0', '1', '3']",0.0034,0.5450,530.5964,9613
+GPT,BPIC15_1.xes,RTFMP,"['0', '1']",0.0069,0.2016,196.2630,9520
+GPT,BPIC15_1.xes,RTFMP,['0'],0.0063,0.3178,309.3740,9534
+GPT,BPIC15_1.xes,RTFMP_filtered,"['0', '1', '2']",0.0185,0.2587,251.8131,8671
+GPT,BPIC15_1.xes,RTFMP_filtered,['0'],0.0116,0.5265,512.5579,9306
+GPT,BPI_Challenge_2012.xes.gz,base,,0.1647,0.6211,63.8837,43524
+GPT,BPI_Challenge_2012.xes.gz,helpdesk,"['0', '1', '2', '3']",0.1525,0.6150,63.2542,43542
+GPT,BPI_Challenge_2012.xes.gz,RTFMP,"['0', '1', '2', '3']",0.0450,2.4248,249.3876,49597
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,BPIC15,"['0', '1', '2']",0.5417,0.1502,338.6852,62
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,BPIC15,['0'],0.5869,0.0855,192.6944,28
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,base,,0.4757,0.3176,716.0429,453
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '2', '3']",0.5590,0.1571,354.2439,34
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '2']",0.5893,0.0708,159.6640,2
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['1', '2', '3']",0.4887,0.0966,217.7198,162
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '2', '3']",0.4640,0.3140,707.9658,456
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1', '3']",0.5156,0.2262,509.9830,71
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,"['0', '1']",0.6853,0.0486,109.5223,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,helpdesk,['0'],0.6728,0.0573,129.0963,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '2', '3']",0.6465,0.0442,99.6901,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '2']",0.6472,0.0584,131.7903,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['1', '2', '3']",0.6050,0.0757,170.6687,5
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '2', '3']",0.6891,0.0494,111.3329,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1', '3']",0.7235,0.0399,90.0755,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,"['0', '1']",0.4886,0.2051,462.4095,74
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP,['0'],0.7165,0.0442,99.6783,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.6632,0.0525,118.3528,0
+GPT,BPI_Challenge_2013_closed_problems.xes.gz,RTFMP_filtered,['0'],0.4678,0.2766,623.6430,463
+GPT,BPI_Challenge_2013_incidents.xes.gz,BPIC15,"['0', '1', '2']",0.2812,0.3901,281.7425,7097
+GPT,BPI_Challenge_2013_incidents.xes.gz,BPIC15,['0'],0.2868,0.4068,293.8332,6986
+GPT,BPI_Challenge_2013_incidents.xes.gz,base,,0.2398,0.2564,185.1805,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '2', '3']",0.2555,0.2039,147.2899,6771
+GPT,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '2']",0.2580,0.0508,36.6960,6772
+GPT,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['1', '2', '3']",0.2498,0.6965,503.0206,6772
+GPT,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '2', '3']",0.2317,0.2773,200.2776,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,helpdesk,"['0', '1', '3']",0.0637,1.2103,874.1276,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '2', '3']",0.2249,0.0282,20.3641,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '2']",0.2920,0.1735,125.3308,6303
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['1', '2', '3']",0.2857,0.2240,161.8106,6771
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '2', '3']",0.2536,0.1703,123.0248,4284
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1', '3']",0.2794,0.1284,92.7200,6024
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,"['0', '1']",0.2094,0.0995,71.8973,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP,['0'],0.2207,0.1746,126.1010,8496
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.2496,0.1569,113.3455,7530
+GPT,BPI_Challenge_2013_incidents.xes.gz,RTFMP_filtered,['0'],0.3231,0.1173,84.7371,3169
+GPT,BPI_Challenge_2013_open_problems.xes.gz,BPIC15,"['0', '1', '2']",0.3143,0.0518,58.0914,26
+GPT,BPI_Challenge_2013_open_problems.xes.gz,BPIC15,['0'],0.4569,0.0873,97.8249,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,base,,0.3209,0.0981,109.9842,44
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '2', '3']",0.3202,0.1049,117.5771,10
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '2']",0.3108,0.0549,61.4914,4
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['1', '2', '3']",0.4562,0.0425,47.6653,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '2', '3']",0.2875,0.3353,375.9361,18
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1', '3']",0.4171,0.0337,37.7322,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,"['0', '1']",0.4219,0.0872,97.7865,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,helpdesk,['0'],0.3628,0.0514,57.6745,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '2', '3']",0.4167,0.0542,60.8015,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '2']",0.3274,0.1565,175.4523,133
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['1', '2', '3']",0.3684,0.0588,65.9639,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '2', '3']",0.4093,0.0432,48.4333,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1', '3']",0.3345,0.0744,83.3946,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,"['0', '1']",0.3161,0.0930,104.2701,0
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP,['0'],0.3362,0.1081,121.2031,14
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.3334,0.1537,172.2790,42
+GPT,BPI_Challenge_2013_open_problems.xes.gz,RTFMP_filtered,['0'],0.3196,0.1636,183.4550,39
+GPT,helpdesk.csv,BPIC15,"['0', '1', '2']",0.8582,0.0771,3.8646,0
+GPT,helpdesk.csv,BPIC15,['0'],0.8582,0.0757,3.7943,0
+GPT,helpdesk.csv,base,,0.8472,0.0808,4.0486,0
+GPT,helpdesk.csv,RTFMP,"['0', '1', '2', '3']",0.8472,0.0810,4.0585,0
+GPT,helpdesk.csv,RTFMP,"['0', '1', '2']",0.8467,0.0813,4.0745,0
+GPT,helpdesk.csv,RTFMP,"['1', '2', '3']",0.8469,0.0809,4.0546,0
+GPT,helpdesk.csv,RTFMP,"['0', '2', '3']",0.8472,0.0806,4.0395,0
+GPT,helpdesk.csv,RTFMP,"['0', '1', '3']",0.8464,0.0810,4.0622,0
+GPT,helpdesk.csv,RTFMP,"['0', '1']",0.8469,0.0811,4.0654,0
+GPT,helpdesk.csv,RTFMP,['0'],0.8469,0.0811,4.0646,0
+GPT,helpdesk.csv,RTFMP_filtered,"['0', '1', '2']",0.8610,0.0780,3.9085,1
+GPT,helpdesk.csv,RTFMP_filtered,['0'],0.8615,0.0781,3.9154,0
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,BPIC15,"['0', '1', '2']",0.8245,0.0376,158.7306,13
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,BPIC15,['0'],0.8271,0.0380,160.4592,3
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '2', '3']",0.8255,0.0366,154.3746,8
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '2']",0.8254,0.0388,163.8756,2
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['1', '2', '3']",0.8254,0.0380,160.4174,4
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '2', '3']",0.8254,0.0376,158.6989,0
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1', '3']",0.8254,0.0381,160.6712,10
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,"['0', '1']",0.8253,0.0383,161.6381,11
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,helpdesk,['0'],0.8253,0.0378,159.7605,2
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,base,,0.8281,0.0379,160.1270,15
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.8256,0.0376,158.6166,0
+GPT,Road_Traffic_Fine_Management_Process.xes.gz,RTFMP_filtered,['0'],0.8257,0.0379,160.0749,0
+GPT,RTFMP_filtered.xes,base,,0.8242,0.0376,158.5406,0
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,BPIC15,"['0', '1', '2']",0.1063,2.2529,940.0276,2675
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,BPIC15,['0'],0.0956,2.3254,970.3102,2706
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '2', '3']",0.0827,0.4818,201.0194,2613
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '2']",0.0838,3.1581,1317.7649,2610
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['1', '2', '3']",0.0849,0.4024,167.9091,2607
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '2', '3']",0.0831,0.4050,168.9846,2612
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1', '3']",0.0834,1.2772,532.9372,2611
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,"['0', '1']",0.0831,2.2636,944.5040,2612
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,helpdesk,['0'],0.0862,2.2738,948.7739,2584
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '2', '3']",0.0307,2.1942,915.5622,2817
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '2']",0.0758,1.8059,753.5303,2631
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['1', '2', '3']",0.0307,0.4352,181.5971,2817
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '2', '3']",0.0437,5.4853,2288.7869,2781
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1', '3']",0.0313,2.8007,1168.6019,2817
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,"['0', '1']",0.0307,3.0372,1267.3097,2817
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP,['0'],0.0307,1.5063,628.5306,2817
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP_filtered,"['0', '1', '2']",0.0722,3.8692,1614.4840,2901
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,RTFMP_filtered,['0'],0.1253,0.1785,74.4924,2686
+GPT,Sepsis%20Cases%20-%20Event%20Log.xes.gz,base,,0.0879,0.8125,339.0417,2600
