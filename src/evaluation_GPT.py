@@ -1317,14 +1317,28 @@ if __name__ == '__main__':
         torch.cuda.set_device(args.gpu)
         print('This is evaluation at gpu: ' + str(args.gpu))
 
-    for log in ['Road_Traffic_Fine_Management_Process.xes.gz',  'helpdesk.csv']:
+    # Reproducing the results from the paper:
+    for log in ['Road_Traffic_Fine_Management_Process.xes.gz', 'helpdesk.csv']:
         main(args, dt_object, combi=[log])
-        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz','BPI_Challenge_2012.xes.gz',
-                         'BPI_Challenge_2013_incidents.xes.gz','BPI_Challenge_2013_open_problems.xes.gz',
-                         'BPIC15_1.xes',
-                         'Road_Traffic_Fine_Management_Process.xes.gz','Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz', 'BPI_Challenge_2012.xes.gz',
+                         'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
+                         'BPIC15_1.xes', 'BPI%20Challenge%202017.xes.gz',
+                         'Road_Traffic_Fine_Management_Process.xes.gz', 'Sepsis%20Cases%20-%20Event%20Log.xes.gz',
                          'helpdesk.csv']:
-                if log != transfer:
-                    main(args, dt_object, combi=[log, transfer])
-                    main(args, dt_object, combi=[transfer])
+            if log != transfer:
+                main(args, dt_object, combi=[log, transfer])
+                main(args, dt_object, combi=[transfer])
 
+    # Additional experiments:
+    for log in ['BPIC15_1.xes', 'RTFMP_filtered.xes']:
+        main(args, dt_object, combi=[log])
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz',
+                         # 'BPI_Challenge_2012.xes.gz',         # not trained on this log
+                         'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
+                         # 'BPI%20Challenge%202017.xes.gz',     # not trained on this log
+                         'BPIC15_1.xes',
+                         'Road_Traffic_Fine_Management_Process.xes.gz', 'Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+                         'helpdesk.csv',
+                         ]:
+            if log != transfer:
+                main(args, dt_object, combi=[log, transfer])

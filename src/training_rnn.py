@@ -555,6 +555,7 @@ if __name__ == '__main__':
         torch.cuda.set_device(args.gpu)
         print('This is training at gpu: ' + str(args.gpu))
 
+    # Reproduce the results from the paper:
     layers = [['0', '1', '2', '3'], ['0', '1', '2'],
               ['1', '2', '3'], ['0', '2', '3'],
               ['0', '1', '3'], ['0', '1'], ['0']]
@@ -569,3 +570,35 @@ if __name__ == '__main__':
             if log != transfer:
                 main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
                 main(args, dt_object, pre_train=True, combi=[transfer], layers=[[]])
+
+    # Additional experiments:
+    layers = [['0', '1', '2'], ['0']]
+
+    # Use the BPIC 2015 log for pre-training:
+    for log in ['BPIC15_1.xes']:
+        # We do not need train on the BPIC 2015 log again as we have already done it
+        # main(args, dt_object, pre_train=True, combi=[log], layers=[[]])
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz',
+                         # 'BPI_Challenge_2012.xes.gz',         # We exclude this log as it is too big
+                         'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
+                         # 'BPI%20Challenge%202017.xes.gz',     # We exclude this log as it is too big
+                         'BPIC15_1.xes',
+                         'Road_Traffic_Fine_Management_Process.xes.gz', 'Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+                         'helpdesk.csv',
+                         ]:
+            if log != transfer:
+                main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
+
+    for log in ['RTFMP_filtered.xes']:
+        # We need to train on the RTFMP filtered log again as we have not done it yet
+        main(args, dt_object, pre_train=True, combi=[log], layers=[[]])
+        for transfer in ['BPI_Challenge_2013_closed_problems.xes.gz',
+                         # 'BPI_Challenge_2012.xes.gz',         # We exclude this log as it is too big
+                         'BPI_Challenge_2013_incidents.xes.gz', 'BPI_Challenge_2013_open_problems.xes.gz',
+                         # 'BPI%20Challenge%202017.xes.gz',     # We exclude this log as it is too big
+                         'BPIC15_1.xes',
+                         'Road_Traffic_Fine_Management_Process.xes.gz', 'Sepsis%20Cases%20-%20Event%20Log.xes.gz',
+                         'helpdesk.csv',
+                         ]:
+            if log != transfer:
+                main(args, dt_object, pre_train=False, combi=[log, transfer], layers=layers)
